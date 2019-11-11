@@ -39,7 +39,7 @@ def reshape_data(association_df):
     summary = association_df.groupby(['REGION', 'EFO_PARENT']).size()
 
     # The multi indexed series is then converted into a dictionary:
-    dictionary = summary.unstack().to_dict(orient='index')
+    dictionary = summary.unstack(fill_value = 0).to_dict(orient='index')
 
     # Return dictionary:
     return dictionary

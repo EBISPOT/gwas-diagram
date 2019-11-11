@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GWAS Catalog diagram page</title>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../static/css/diagram.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/diagram_page.css">
+</head>
+<body>
+<!-- Define filters-->
+
+<div class="filter" id="filter">
+    <div class="diagramFilter">
+        <form id = "diagramFilter">
+            <p>Currently available filters: </p>
+            Pubmed ID: <input type="number" name="pmid", placeholder="25673412"><br>
+            p-value: <input type="text" name="pvalue", placeholder="1e-200"><br>
+            EFO uri: <input type="text" name="efo"><br>
+        </form>
+    </div>
+    <div>
+        <button id="filter_button">Filter diagram</button>
+    </div>
+</div>
+
+
+<div class="reportBox" id="requestBody"></div>
+
+<div id="outputContainer" style="display:none" >
+    <input type="checkbox" id="showData" value="showdata">Show fetched data<br>
+    <div class="reportBox" id="outputBox"></div>
+</div>
+
+
+
+<!-- Define something else-->
+<script src="../static/js/diagram.js"></script>
+<script src="../static/js/diagram_page.js"></script>
+</body>
+</html>

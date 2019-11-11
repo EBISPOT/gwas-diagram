@@ -1,4 +1,4 @@
-from flask import Flask, request, send_file
+from flask import Flask, request, send_file,render_template
 from flask_restplus import Resource, Api, reqparse
 
 # from flask_cors import CORS
@@ -73,6 +73,10 @@ class diagarmFilter(Resource):
 
         return reshaped_data
 
+# The following endpoint serves testing purposes only to demonstrate the flexibility of the template generation.
+@app.route('/diagram')
+def template_test():
+    return render_template('diagram.html')
 
 if __name__ == '__main__':
     app.run(debug=False)

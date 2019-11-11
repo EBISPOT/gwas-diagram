@@ -8,6 +8,7 @@ def filter(association_df, filter_parameters):
 
     # {"pmid": 123, "efo": "EFO_000123", "pvalue": false}
     if filter_parameters['pmid']:
+        print(filter_parameters['pmid']);
         filtered_df = filtered_df.loc[ filtered_df.PUBMEDID == filter_parameters['pmid']]
 
     if filter_parameters['efo']:
