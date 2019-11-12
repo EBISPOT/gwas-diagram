@@ -20,6 +20,34 @@ curl -X POST "http://localhost:9000/v1/filter" \
     -d pvalue='1e-30'
 ```
 
+#### Response:
+
+```json
+
+{
+    "10p11.1": {
+        "Biological process": 0,
+        "Body measurement": 0,
+        "Cancer": 4,
+        "Cardiovascular disease": 0,
+        "Cardiovascular measurement": 0,
+        "Digestive system disorder": 0,
+        "Hematological measurement": 0,
+        "Immune system disorder": 0,
+        "Inflammatory measurement": 0,
+        "Lipid or lipoprotein measurement": 0,
+        "Liver enzyme measurement": 0,
+        "Metabolic disorder": 0,
+        "Neurological disorder": 0,
+        "Other disease": 1,
+        "Other measurement": 1,
+        "Other trait": 0,
+        "Response to drug": 0
+    },
+...
+```
+
+
 ### UI diagram test address
 
 `http://localhost:9000/diagram`
