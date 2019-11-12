@@ -1,6 +1,9 @@
 import numpy as np
 
 def validate_paramters(args):
+    # TODO: Investigate if it make sense to export and ordered dictionary, where the empty keys are dropped.
+    # It might be slower to generate the output, but might be faster to render on the frontend.
+    # Not too high priority
 
     # These parameters are filled and validated:
     filterParameters = {}
