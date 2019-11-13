@@ -4,7 +4,7 @@
 
 1. Exported GWAS Catalog files are read and compiled into a pandas dataframe.
 2. The filtering endpoint of the REST API accepts parameters to filter associations 
-(currently supported filters: p-value, pmid, EFO URI).
+(currently supported filters: p-value, pmid, EFO URI, catalog publish date).
 3. The returned json contains association counts for each cytobands broken down to trait categories.
 4. A primitive UI endpoint proides way to test the diagram.
 5. The caryogram of chromosome 1 is loaded as an example.
@@ -54,7 +54,7 @@ curl -X POST "http://localhost:9000/v1/filter" \
 
 ## Example diagram:
 
-![First version of the diagram](screenshot_11.12.png)
+![First version of the diagram](screenshot_2019-11-13.png)
 
 ## TODO
 
@@ -63,7 +63,7 @@ Roughly representing priority
 1. Solve y-axis distribution of the circles to avoid clashing.
 2. Extend the applicable filters to further fields.
 3. Embed diagram in a canvas to enable download of the diagram as png.
-4. Add all chromosomes to the plot.
+4. DONE Add all chromosomes to the plot.
 5. Adding interactivity: cytoband highlight, sphere info etc.
 
 ### For the record

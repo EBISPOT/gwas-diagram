@@ -1,6 +1,6 @@
 // When the page is loaded, the chromosomes are added:
 $( document ).ready(function() {
-    $.get('../static/svg/1_fixed.svg', function(data){
+    $.get('../static/svg/chromosomes.svg', function(data){
         $('#svgEmbed').append(data.documentElement)
     })
 });
@@ -34,7 +34,7 @@ function parseForm() {
     var parameters = new FormData();
 
     // Fetch pmid efo pvalue
-    for ( var field of ['pmid', 'efo', 'pvalue']){
+    for ( var field of ['pmid', 'efo', 'pvalue', 'catalog_date']){
         var input = document.getElementsByName(field)[0].value;
         if (input){
             parameters.append(field, input);
@@ -61,7 +61,7 @@ $("#showData").click(function(){
 // Draw shit:
 function draw_diagram(){
     // Adding chromosome 1 to the diagram:
-    Process_chromosome(d3.select("#chromosome1"))
+    d3.selectAll(".chromosome").each(Process_chromosome)
 }
 
 
@@ -83,24 +83,22 @@ var chr_name = '1';
 
 // selection object:
 var svg = d3.select("svg")
-    .attr("width", 500)
-    .attr("height", 600);
-
-
-
-
+    .attr("width", 3000)
+    .attr("height", 1200);
 
 
 // This function loops through a full chromosome and extracts parameters:
-function Process_chromosome(chr) {
+function Process_chromosome() {
+    // Extract chromosome name:
+    var chromosme_name = d3.select(this).attr('id').replace('chromosome', '');
+
     // Loop through all the cytobands of the chromosome:
-    chr.selectAll('path').each(function(){
+    d3.select(this).selectAll('path').each(function(){
         // Select node:
         var node = d3.select(this);
 
         // Get node parameters:
         var cb_ID = node.attr('id');
-        var chromosme_name = chr.attr('id').replace('chromosome', '');
 
         var coordinates = node.attr('d').split(" ")[1].split(',');
 

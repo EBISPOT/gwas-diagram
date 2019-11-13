@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <title>GWAS Catalog diagram page</title>
@@ -15,9 +15,10 @@
     <div class="diagramFilter">
         <form id = "diagramFilter">
             <p>Currently available filters: </p>
-            Pubmed ID: <input type="number" name="pmid", placeholder="25673412"><br>
-            p-value: <input type="text" name="pvalue", placeholder="1e-200"><br>
-            EFO uri: <input type="text" name="efo"><br>
+            Pubmed ID: <input type="number" name="pmid" placeholder="25673412"><br>
+            p-value: <input type="text" name="pvalue" placeholder="1e-200"><br>
+            EFO uri: <input type="text" name="efo" placeholder="http://www.ebi.ac.uk/efo/EFO_0000305"><br>
+            Catalog publish date: <input type="text" name="catalog_date" placeholder="YYYY/MM/DD"><br>
         </form>
     </div>
     <div>
@@ -33,7 +34,7 @@
     <div class="reportBox" id="outputBox"></div>
 </div>
 
-The diagram goes here:
+<br>The diagram goes here:<br>
 
 <div id = "diagramContainer">
      <svg id="svgEmbed"></svg>

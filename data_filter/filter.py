@@ -17,5 +17,8 @@ def filter(association_df, filter_parameters):
     if filter_parameters['pvalue']:
         filtered_df = filtered_df.loc[ filtered_df.PVALUE_MLOG >= filter_parameters['pvalue']]
 
+    if filter_parameters['catalog_date']:
+        filtered_df = filtered_df.loc[filtered_df.CATALOG_DATE <= filter_parameters['catalog_date']]
+
     print('[Info] Number of associations: {}'.format(len(filtered_df)))
     return filtered_df

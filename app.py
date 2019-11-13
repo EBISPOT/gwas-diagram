@@ -36,6 +36,7 @@ fiterParams = api.parser()
 fiterParams.add_argument('pmid', type=int, required=False, help='Pubmed ID of a requested publication.')
 fiterParams.add_argument('efo', type=str, required=False, help='EFO id of the term.')
 fiterParams.add_argument('pvalue', type=str, required=False, help='Upper boundary of the p-value (eg. 1e-8).')
+fiterParams.add_argument('catalog_date', type=str, required=False, help='Upper boundary for the catalog publish date (eg. 2014-01-03).')
 
 
 # Enabling cross-site scripting (might need to be removed later):

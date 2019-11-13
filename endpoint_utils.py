@@ -14,6 +14,15 @@ def validate_paramters(args):
     # Parse EFO:
     filterParameters['efo'] = args['efo'] if isinstance(args['efo'],str) else False
 
+    # Parse date:
+    if isinstance(args['catalog_date'], str):
+        try:
+            filterParameters['catalog_date'] = int(args['catalog_date'].replace("/", ""))
+        except:
+            filterParameters['catalog_date'] = False
+    else:
+        filterParameters['catalog_date'] = False
+
     # Parse p-value:
     if isinstance(args['pvalue'], str):
         pval = args['pvalue'].lower()

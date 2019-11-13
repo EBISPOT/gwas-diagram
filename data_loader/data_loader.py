@@ -48,6 +48,9 @@ def get_association_dataframe(association_file):
     # As a quick and dirty solution, I just exclude rows with multiple EFOs
     association_df = association_df.loc[~association_df.MAPPED_TRAIT_URI.str.contains(',')]
 
+    # Convert date columns into integers:
+    association_df['CATALOG_DATE'] = association_df['DATE ADDED TO CATALOG'].apply(lambda x: int(x.replace("-", "")))
+
     return (association_df)
 
 
