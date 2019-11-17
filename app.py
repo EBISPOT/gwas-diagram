@@ -36,6 +36,8 @@ fiterParams = api.parser()
 fiterParams.add_argument('pmid', type=int, required=False, help='Pubmed ID of a requested publication.')
 fiterParams.add_argument('efo', type=str, required=False, help='EFO id of the term.')
 fiterParams.add_argument('pvalue', type=str, required=False, help='Upper boundary of the p-value (eg. 1e-8).')
+fiterParams.add_argument('sample', type=str, required=False, help='Part of the sample description.')
+fiterParams.add_argument('ancestry', type=str, required=False, help='Broad ancestry description of the samples.')
 fiterParams.add_argument('catalog_date', type=str, required=False, help='Upper boundary for the catalog publish date (eg. 2014-01-03).')
 
 
@@ -52,7 +54,8 @@ fiterParams.add_argument('catalog_date', type=str, required=False, help='Upper b
 # Loading data - loaded once, filtered after:
 parent_mapping_file = Configuration.parent_mapping_file
 association_file = Configuration.association_file
-gwas_data = load_data(parent_mapping_file,association_file)
+ancestry_file = Configuration.ancestry_file
+gwas_data = load_data(parent_mapping_file,association_file,ancestry_file)
 
 @api.route('/v1/filter')
 @api.expect(fiterParams, validate=True)

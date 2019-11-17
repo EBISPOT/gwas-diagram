@@ -20,5 +20,11 @@ def filter(association_df, filter_parameters):
     if filter_parameters['catalog_date']:
         filtered_df = filtered_df.loc[filtered_df.CATALOG_DATE <= filter_parameters['catalog_date']]
 
+    if filter_parameters['sample']:
+        filtered_df = filtered_df.loc[(~filtered_df['SAMPLE_DESCRIPTION'].isna()) & (filtered_df['SAMPLE_DESCRIPTION'].str.match(pat = '.*{}.*'.format(filter_parameters['sample'])))]
+
+    if filter_parameters['ancestry']:
+        filtered_df = filtered_df.loc[(~filtered_df['BROAD ANCESTRAL CATEGORY'].isna()) & (filtered_df['BROAD ANCESTRAL CATEGORY'].str.match(pat = '.*{}.*'.format(filter_parameters['ancestry'])))]
+
     print('[Info] Number of associations: {}'.format(len(filtered_df)))
     return filtered_df

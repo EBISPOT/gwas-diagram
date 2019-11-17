@@ -8,6 +8,7 @@ $( document ).ready(function() {
 
 // some global variable:
 var response = {};
+var cb_sort_positions = {};
 var color_mapping = {
     "Cardiovascular disease" : "#B33232",
     "Hematological measurement" : "#8DD3C7",
@@ -34,7 +35,7 @@ function parseForm() {
     var parameters = new FormData();
 
     // Fetch pmid efo pvalue
-    for ( var field of ['pmid', 'efo', 'pvalue', 'catalog_date']){
+    for ( var field of ['pmid', 'efo', 'pvalue', 'catalog_date', 'sample', 'ancestry']){
         var input = document.getElementsByName(field)[0].value;
         if (input){
             parameters.append(field, input);
@@ -64,27 +65,15 @@ function draw_diagram(){
     d3.selectAll(".chromosome").each(Process_chromosome)
 }
 
-
-// Drawing all circles for a single cytoband.
-// Does:
-//  - drops empty categories. - DONE
-//  - Orders categories by size. - DONE
-//  - Fetch color definitions. - DONE
-//  - Calculate horizontal position.
-//  - Generate circles.
-
-
 function get_radius(hit){
-    var constant = 20 // 7.08
+    var constant = 7.08
     return Math.sqrt(constant * hit / Math.PI)
 }
-
-var chr_name = '1';
 
 // selection object:
 var svg = d3.select("svg")
     .attr("width", 3000)
-    .attr("height", 1200);
+    .attr("height", 3000);
 
 
 // This function loops through a full chromosome and extracts parameters:
@@ -105,13 +94,112 @@ function Process_chromosome() {
         // Look up the ID in the data:
         cb_ID = cb_ID.replace('cb','').replace("_",".");
         if ( cb_ID in window.response ){
-            var circles = draw_circles(cb_ID,chromosme_name,coordinates);
+            var circles = draw_circles(cb_ID,coordinates);
+        }
+    })
+
+    // Aligning circles:
+    Object.keys(window.cb_sort_positions).forEach(function(chromosome) {
+
+        // sort both the q and p arms -> from the chromosome diagrams, might be empty:
+        window.cb_sort_positions[chromosome]['p'].sort(function(a, b) {return  b[1] - a[1];});
+        window.cb_sort_positions[chromosome]['q'].sort(function(a, b) {return  a[1] - b[1];});
+
+        // Adjust spheres on the p arm:
+        var bottom = window.cb_sort_positions[chromosome]['center'];
+        for (var band of window.cb_sort_positions[chromosome]['p']){
+            var radius = band[2];
+            var position = band[1];
+            var cb_id = band[0];
+            // console.log(`${cb_id} -> ${bottom} -> ${radius} -> ${position}`);
+
+            // band group selection:
+            var band_group = d3.select('#' + cb_id);
+
+            // If the position is below the current bottom:
+            if (bottom < position + radius){
+                var new_y_pos = bottom - radius;
+                band_group.attr("transform", `translate(70, ${new_y_pos})`);
+                bottom =  bottom - 2*radius;
+            }
+            else {
+                bottom =  position - radius;
+            }
+        }
+        // Adjust spheres on the p arm:
+        var top = window.cb_sort_positions[chromosome]['center'];
+        for (var band of window.cb_sort_positions[chromosome]['q']){
+
+            var radius = band[2];
+            var position = band[1];
+            var cb_id = band[0];
+
+            // band group selection:
+            var band_group = d3.select('#' + cb_id);
+
+            // If the position is below the current bottom:
+            if (top > position - radius){
+                var new_y_pos = top + radius;
+                band_group.attr("transform", `translate(70, ${new_y_pos})`);
+                top =  top + 2*radius;
+            }
+            else {
+                top = top + radius;
+            }
         }
     });
 
-    //
-
 }
+
+adjust_bands = function(chromosome) {
+
+    // sort both the q and p arms:
+    window.cb_sort_positions[chromosome]['p'].sort(function(a, b) {return  b[1] - a[1];});
+    window.cb_sort_positions[chromosome]['q'].sort(function(a, b) {return  a[1] - b[1];});
+
+    // Adjust spheres on the p arm:
+    var bottom = window.cb_sort_positions[chromosome]['center'];
+    for (var band of window.cb_sort_positions[chromosome]['p']){
+        var radius = band[2];
+        var position = band[1];
+        var cb_id = band[0];
+        console.log(`${cb_id} -> ${bottom} -> ${radius} -> ${position}`);
+
+        // band group selection:
+        var band_group = d3.select('#' + cb_id);
+
+        // If the position is below the current bottom:
+        if (bottom < position + radius){
+            var new_y_pos = bottom - radius;
+            band_group.attr("transform", `translate(70, ${new_y_pos})`);
+            bottom =  bottom - 2*radius;
+        }
+        else {
+            bottom =  position - radius;
+        }
+    }
+    // Adjust spheres on the p arm:
+    var top = window.cb_sort_positions[chromosome]['center'];
+    for (var band of window.cb_sort_positions[chromosome]['q']){
+
+        var radius = band[2];
+        var position = band[1];
+        var cb_id = band[0];
+
+        // band group selection:
+        var band_group = d3.select('#' + cb_id);
+
+        // If the position is below the current bottom:
+        if (top > position - radius){
+            var new_y_pos = top + radius;
+            band_group.attr("transform", `translate(70, ${new_y_pos})`);
+            top =  top + 2*radius;
+        }
+        else {
+            top = top + radius;
+        }
+    }
+};
 
 // This function filters out data for a given cytoband:
 function filter_sort_data(cytoband){
@@ -134,9 +222,11 @@ function filter_sort_data(cytoband){
 }
 
 // Function to draw circles for a cytoband:
-function draw_circles(cb_id, chromosome, coordinates){
+function draw_circles(cb_id, coordinates){
 
-    console.log(cb_id);
+    // Fetch chromosome name:
+    var chr_name = (cb_id.match('p')) ? cb_id.split('p')[0] : cb_id.split('q')[0];
+
 
     // Get sorted data:
     var sorted_categories = filter_sort_data(cb_id);
@@ -149,10 +239,31 @@ function draw_circles(cb_id, chromosome, coordinates){
     var group_id = 'group_'+cb_id.replace('.','_');
 
     // Create a group:
-    var chromosome = d3.select("#chromosome" + chromosome);
+    var chromosome = d3.select("#chromosome" + chr_name);
     var cb_group = chromosome.append('g')
         .attr('id', group_id)
         .attr('class', 'cytoband_spheres');
+
+    // Start populating the sort position data:
+    if ( ! (chr_name in window.cb_sort_positions )){
+        var centre = chromosome.select("#centre" + chr_name).attr('d').split(' ')[1].split(',')[1];
+        window.cb_sort_positions[chr_name] = {
+            'q' : [],
+            'p' : [],
+            'center' : Number(centre)
+        };
+    }
+
+    // populate data:
+    if ( cb_id.match('p') ){
+        window.cb_sort_positions[chr_name]['p'].push([group_id, Number(coordinates[1]), get_radius(sorted_categories[0][1])]);
+    }
+    else if (cb_id.match('q')){
+        window.cb_sort_positions[chr_name]['q'].push([group_id, Number(coordinates[1]), get_radius(sorted_categories[0][1])]);
+    }
+    else {
+        return
+    }
 
     // Adding circles:
     // <circle r='4.0985145' fill='#FDB462' stroke='black' stroke-width='0.5' gwasname="t    ype II diabetes mellitus" class='gwas-trait EFO_0001360' fading='false' gwasassociation='11785,13327,13346' priority='0' />
@@ -163,24 +274,17 @@ function draw_circles(cb_id, chromosome, coordinates){
         } else {
             x_coord = x_coord + radius
         }
-        console.log(radius,x_coord);
         cb_group.insert("circle")
             .attr("cx", x_coord)
             .attr("cy", y_coord)
             .attr("r", radius)
             .style("fill", category[2])
             .style("stroke","black")
-            .style("stroke-width", "0.5")
+            .style("stroke-width", "0.1")
     }
 
     // Now translate the group to the proper place:
-
     cb_group.attr("transform", `translate(70,${coordinates[1]})`)
-}
-
-// Function to get ID from a node
-function get_cytoband_id(node){
-    return d3.select(node).attr('id');
 }
 
 // Upon hitting submit button: parse input fields and then fetch the corresponding filtered data
@@ -194,6 +298,9 @@ $("#filter_button").click(function(){
 
     // Wiping the svg field:
     d3.selectAll(".cytoband_spheres").remove();
+
+    // Wiping the sort data:
+    window.cb_sort_positions = {};
 
     // hostname:
     var jqxhr = $.ajax({

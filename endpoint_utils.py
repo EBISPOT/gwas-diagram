@@ -14,6 +14,12 @@ def validate_paramters(args):
     # Parse EFO:
     filterParameters['efo'] = args['efo'] if isinstance(args['efo'],str) else False
 
+    # Parse ancestry:
+    filterParameters['ancestry'] = args['ancestry'] if isinstance(args['ancestry'], str) else False
+
+    # Parse sample:
+    filterParameters['sample'] = args['sample'] if isinstance(args['sample'],str) else False
+
     # Parse date:
     if isinstance(args['catalog_date'], str):
         try:
