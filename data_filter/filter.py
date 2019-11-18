@@ -11,8 +11,11 @@ def filter(association_df, filter_parameters):
         print(filter_parameters['pmid']);
         filtered_df = filtered_df.loc[ filtered_df.PUBMEDID == filter_parameters['pmid']]
 
-    if filter_parameters['efo']:
-        filtered_df = filtered_df.loc[ filtered_df.MAPPED_TRAIT_URI == filter_parameters['efo']]
+    if filter_parameters['trait']:
+        filtered_df = filtered_df.loc[
+            (filtered_df['MAPPED_TRAIT'].str.match(pat = '.*{}.*'.format(filter_parameters['trait']))) |
+            (filtered_df['DISEASE/TRAIT'].str.match(pat = '.*{}.*'.format(filter_parameters['trait'])))
+        ]
 
     if filter_parameters['pvalue']:
         filtered_df = filtered_df.loc[ filtered_df.PVALUE_MLOG >= filter_parameters['pvalue']]

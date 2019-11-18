@@ -34,7 +34,7 @@ app.register_blueprint(bp)
 # Preparing for filter paramters:
 fiterParams = api.parser()
 fiterParams.add_argument('pmid', type=int, required=False, help='Pubmed ID of a requested publication.')
-fiterParams.add_argument('efo', type=str, required=False, help='EFO id of the term.')
+fiterParams.add_argument('trait', type=str, required=False, help='Trait of ontology term.')
 fiterParams.add_argument('pvalue', type=str, required=False, help='Upper boundary of the p-value (eg. 1e-8).')
 fiterParams.add_argument('sample', type=str, required=False, help='Part of the sample description.')
 fiterParams.add_argument('ancestry', type=str, required=False, help='Broad ancestry description of the samples.')

@@ -12,7 +12,7 @@ def validate_paramters(args):
     filterParameters['pmid'] = args['pmid'] if isinstance(args['pmid'], int) else False
 
     # Parse EFO:
-    filterParameters['efo'] = args['efo'] if isinstance(args['efo'],str) else False
+    filterParameters['trait'] = args['trait'] if isinstance(args['trait'],str) else False
 
     # Parse ancestry:
     filterParameters['ancestry'] = args['ancestry'] if isinstance(args['ancestry'], str) else False
