@@ -54,7 +54,7 @@ curl -X POST "http://localhost:9000/v1/filter" \
 
 ## Example diagram:
 
-![First version of the diagram](screenshot_2019-11-13.png)
+![First version of the diagram](screenshot_11_18.png)
 
 ## TODO
 
