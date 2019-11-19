@@ -72,7 +72,8 @@ $("#filter_button").click(function(){
             $("#outputBox").append(`<p>${pretty}</p>`);
 
             // Once the response is here, we plot:
-            draw_diagram();
+            // draw_diagram();
+            draw_rectangles('1p13.3');
         }
     })
 });

@@ -248,3 +248,138 @@ function draw_circles(cb_id, coordinates){
     // Now translate the group to the proper place:
     cb_group.attr("transform", `translate(70,${coordinates[1]})`)
 }
+
+draw_rectangles = function(cb_name){
+    // Parse chromosome name:
+    var chromosome_name = cb_name.match('(.+)[pq]')[1];
+
+    // Generate band ID:
+    var band_id = 'cb' + cb_name.replace('.','_');
+
+    // Sorting and shit:
+    var sorted_categories = filter_sort_data(cb_name);
+    console.log(sorted_categories);
+
+    // Initialize offsets:
+    var x_offset = 0;
+    var y_offset = 0;
+
+    // Initialize constants:
+    var row_size = 60;
+    var unit_size = 3;
+
+    // Create a group for the band:
+    var group_id = 'group_'+cb_name.replace('.','_');
+    var chromosome = d3.select("#chromosome" + chromosome_name);
+    var cb_group = chromosome.append('g')
+        .attr('id', group_id)
+        .attr('class', 'cytoband_associations');
+
+    var All_count = 0; // To track the full count for the cytoband
+
+    // Looping through all categories and draw a corresponding rectangle:
+    for(var group of sorted_categories){
+
+        // extract values:
+        var count = group[1];
+        var color = group[2];
+
+        // Save count
+        All_count = All_count + count;
+
+        var count_set = split_count(count, x_offset, row_size);
+        console.log('** Count:' + count);
+        console.log('** Offset:     ' + x_offset);
+        console.log(count_set);
+        console.log('');
+
+        // Drawing first row:
+        if (count_set[0]){
+            cb_group.append('rect')
+                .attr('x', x_offset * unit_size)
+                .attr('y', y_offset * unit_size)
+                .attr('width', count_set[0] * unit_size)
+                .attr('height', unit_size)
+                .style("fill", color)
+                .style("stroke",color)
+                .style("stroke-width", 0.1);
+
+            // Updating x,y-offset:
+            if (x_offset + count_set[0] == row_size){
+                x_offset = 0;
+                y_offset = y_offset + 1;
+            }
+            else {
+                x_offset = x_offset + count_set[0];
+            }
+        }
+
+        // Drawing the second row:
+        if (count_set[1]){
+
+            cb_group.append('rect')
+                .attr('x', 0)
+                .attr('y', y_offset * unit_size)
+                .attr('width', row_size * unit_size)
+                .attr('height', count_set[1] * unit_size)
+                .style("fill", color)
+                .style("stroke",color)
+                .style("stroke-width", 0.1);
+
+            y_offset = y_offset + count_set[1];
+        }
+
+        // Drawing thir row:
+        if (count_set[2]){
+            cb_group.append('rect')
+                .attr('x', 0)
+                .attr('y', y_offset * unit_size)
+                .attr('width', count_set[2] * unit_size)
+                .attr('height', unit_size)
+                .style("fill", color)
+                .style("stroke",color)
+                .style("stroke-width", 0.1);
+
+            // Updating x,y-offset:
+            x_offset = count_set[2];
+        }
+    }
+
+    // Add a thick boundary covering the entire box:
+    cb_group.append('rect')
+        .attr('x', 0)
+        .attr('y', 0)
+        .attr('width', row_size * unit_size)
+        .attr('height', Math.ceil(All_count /row_size) * unit_size)
+        .style("fill", 'none')
+        .style("stroke",'black')
+        .style("stroke-width", 1);
+    console.log(All_count);
+
+    // Now translate the group to the proper place:
+    cb_group.attr("transform", `translate(70,50)`)
+
+};
+
+split_count = function(count, x_offset, width){
+    // This function calculates the split of the counts given the count the x-offset and the width
+
+    var split = [0,0,0];
+
+    // get first count:
+    if (x_offset != 0){
+        split[0] = (width - x_offset >= count) ? count : width - x_offset;
+
+        // If the first row is not yet full:
+        if (count == split[0]){return split;}
+
+        // If more point left:
+        count = count - split[0];
+    }
+
+
+    split[1] = Math.floor(count / width);
+    split[2] = count % width;
+
+    return split;
+};
