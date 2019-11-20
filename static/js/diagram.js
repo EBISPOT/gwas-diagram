@@ -21,6 +21,7 @@ var color_mapping = {
     "Other disease" : "#FF3399",
     "Digestive system disorder" : "#B7704C"
 };
+var scale = 1;
 
 // Draw shit:
 function draw_diagram(){
@@ -32,7 +33,9 @@ function draw_diagram(){
 }
 
 function get_radius(hit){
-    var constant = 15
+
+    // Constant now is derived from the scale:
+    var constant = 15 * window.scale;
     return Math.sqrt(constant * hit / Math.PI)
 }
 

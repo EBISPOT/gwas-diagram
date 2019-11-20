@@ -10,13 +10,19 @@ $( document ).ready(function() {
 function parseForm() {
     var parameters = new FormData();
 
-    // Fetch pmid efo pvalue
-    for ( var field of ['pmid', 'trait', 'pvalue', 'catalog_date', 'sample', 'ancestry']){
+    // Fetch text field
+    for ( var field of ['pmid', 'trait', 'pvalue', 'catalog_date', 'sample']){
         var input = document.getElementsByName(field)[0].value;
         if (input){
             parameters.append(field, input);
         }
     }
+
+    // Fetch ancestry:
+    if( $('option[name="ancestry"]:selected').val() ){
+        parameters.append('ancestry', $('option[name="ancestry"]:selected').val());
+    }
+
     return(parameters);
 }
 
@@ -70,6 +76,9 @@ $("#filter_button").click(function(){
 
             // Extract the type of the visualization:
             window.visualization_type = $('input[name="visType"]:checked').val();
+
+            // Update scale:
+            window.scale = $('option[name="scale"]:selected').val();
 
             // Once the response is here, we plot:
             draw_diagram();
