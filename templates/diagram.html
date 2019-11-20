@@ -12,58 +12,97 @@
 <!-- Define filters-->
 
 <div class="filter" id="filter">
-    <div class="diagramFilter">
+
+    <!-- Select basic values -->
+    <div class="filterGroup">
         <form id = "diagramFilter">
             <p>Currently available filters: </p>
-            Pubmed ID: <input type="number" name="pmid" placeholder="25673412"><br>
-            p-value: <input type="text" name="pvalue" placeholder="1e-200"><br>
-            Sample description: <input type="text" name="sample" placeholder="Han Chinese"><br>
 
-            Select ancestry category:
-            <select name="ancestry">
-                <option disabled selected value> -- select an option -- </option>
-                <option name="ancestry" value="East Asian">East Asian</option>
-                <option name="ancestry" value="European">European</option>
-                <option name="ancestry" value="African American or Afro-Caribbean">African American or Afro-Caribbean</option>
-                <option name="ancestry" value="NR">NR</option>
-                <option name="ancestry" value="African unspecified">African unspecified</option>
-                <option name="ancestry" value="Sub-Saharan African">Sub-Saharan African</option>
-                <option name="ancestry" value="Hispanic or Latin American">Hispanic or Latin American</option>
-                <option name="ancestry" value="South Asian">South Asian</option>
-                <option name="ancestry" value="South East Asian">South East Asian</option>
-                <option name="ancestry" value="Greater Middle Eastern (Middle Eastern, North African or Persian)">Greater Middle Eastern (Middle Eastern, North African or Persian)</option>
-                <option name="ancestry" value="Asian unspecified">Asian unspecified</option>
-                <option name="ancestry" value="Native American">Native American</option>
-                <option name="ancestry" value="Oceanian">Oceanian</option>
-                <option name="ancestry" value="Other admixed ancestry">Other admixed ancestry</option>
-            </select><br>
+            <div class="filterOptions">
+                Pubmed ID: <input type="number" name="pmid" placeholder="25673412"><br>
+                p-value: <input type="text" name="pvalue" placeholder="1e-200"><br>
+                Sample description: <input type="text" name="sample" placeholder="Han Chinese"><br>
 
-            Trait: <input type="text" name="trait" placeholder="coronary heart disease"><br>
-            Catalog publish date: <input type="text" name="catalog_date" placeholder="YYYY/MM/DD"><br>
+                Select ancestry category:
+                <select name="ancestry">
+                    <option disabled selected value> -- select an option -- </option>
+                    <option name="ancestry" value="East Asian">East Asian</option>
+                    <option name="ancestry" value="European">European</option>
+                    <option name="ancestry" value="African American or Afro-Caribbean">African American or Afro-Caribbean</option>
+                    <option name="ancestry" value="NR">NR</option>
+                    <option name="ancestry" value="African unspecified">African unspecified</option>
+                    <option name="ancestry" value="Sub-Saharan African">Sub-Saharan African</option>
+                    <option name="ancestry" value="Hispanic or Latin American">Hispanic or Latin American</option>
+                    <option name="ancestry" value="South Asian">South Asian</option>
+                    <option name="ancestry" value="South East Asian">South East Asian</option>
+                    <option name="ancestry" value="Greater Middle Eastern (Middle Eastern, North African or Persian)">Greater Middle Eastern (Middle Eastern, North African or Persian)</option>
+                    <option name="ancestry" value="Asian unspecified">Asian unspecified</option>
+                    <option name="ancestry" value="Native American">Native American</option>
+                    <option name="ancestry" value="Oceanian">Oceanian</option>
+                    <option name="ancestry" value="Other admixed ancestry">Other admixed ancestry</option>
+                </select><br>
+
+                Trait: <input type="text" name="trait" placeholder="coronary heart disease"><br>
+                Catalog publish date: <input type="text" name="catalog_date" placeholder="YYYY/MM/DD"><br>
+            </div>
         </form>
     </div>
-    <div>
-        <p>Please select visualization type:</p>
-        <input type="radio" name="visType" value="circles" checked="checked"> Stacked circle plot<br>
-        <input type="radio" name="visType" value="rectangles"> Stacked rectangle plot<br>
-    </div>
-    <div>
-        Please select visualization scale:
-        <select>
-        	<option name="scale" value="1">1</option>
-            <option name="scale" value="2">2</option>
-            <option name="scale" value="3">3</option>
-            <option name="scale" value="4">4</option>
-            <option name="scale" value="5">5</option>
-            <option name="scale" value="6">6</option>
-            <option name="scale" value="7">7</option>
-            <option name="scale" value="8">8</option>
-            <option name="scale" value="9">9</option>
-        </select>
-        <br>
 
+    <!-- Option to select visualization types -->
+    <div class="filterGroup">
+        <p>Please select visualization type:</p>
+        <div class="filterOptions">
+            <input type="radio" name="visType" value="circles" checked="checked"> Stacked circle plot<br>
+            <input type="radio" name="visType" value="rectangles"> Stacked rectangle plot<br>
+        </div>
     </div>
-    <div>
+
+    <!-- Select signal scale -->
+    <div class="filterGroup">
+        Please select visualization scale:
+        <div class="filterOptions">
+            <select>
+                <option name="scale" value="1">1</option>
+                <option name="scale" value="2">2</option>
+                <option name="scale" value="3">3</option>
+                <option name="scale" value="4">4</option>
+                <option name="scale" value="5">5</option>
+                <option name="scale" value="6">6</option>
+                <option name="scale" value="7">7</option>
+                <option name="scale" value="8">8</option>
+                <option name="scale" value="9">9</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Option to select trait groups -->
+    <div class="filterGroup">
+        Please select trait categories:
+        <div class="filterOptions">
+            <form>
+                <input type="checkbox" name="parent_trait" value="Cardiovascular disease"  checked="checked"> <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9" stroke="black" stroke-width="1" fill="#B33232"/></svg> Cardiovascular disease<br>
+                <input type="checkbox" name="parent_trait" value="Hematological measurement"  checked="checked"> <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9" stroke="black" stroke-width="1" fill="#8DD3C7"/></svg> Hematological measurement<br>
+                <input type="checkbox" name="parent_trait" value="Neurological disorder"  checked="checked"> <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9" stroke="black" stroke-width="1" fill="#FFFFB3"/></svg> Neurological disorder<br>
+                <input type="checkbox" name="parent_trait" value="Biological process"  checked="checked"> <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9" stroke="black" stroke-width="1" fill="#BEBADA"/></svg> Biological process<br>
+                <input type="checkbox" name="parent_trait" value="Cardiovascular measurement"  checked="checked"> <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9" stroke="black" stroke-width="1" fill="#80B1D3"/></svg> Cardiovascular measurement<br>
+                <input type="checkbox" name="parent_trait" value="Other trait"  checked="checked"> <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9" stroke="black" stroke-width="1" fill="#FB8072"/></svg> Other trait<br>
+                <input type="checkbox" name="parent_trait" value="Metabolic disorder"  checked="checked"> <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9" stroke="black" stroke-width="1" fill="#FDB462"/></svg> Metabolic disorder<br>
+                <input type="checkbox" name="parent_trait" value="Response to drug"  checked="checked"> <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9" stroke="black" stroke-width="1" fill="#FCCDE5"/></svg> Response to drug<br>
+                <input type="checkbox" name="parent_trait" value="Lipid or lipoprotein measurement"  checked="checked"> <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9" stroke="black" stroke-width="1" fill="#B3DE69"/></svg> Lipid or lipoprotein measurement<br>
+                <input type="checkbox" name="parent_trait" value="Body measurement"  checked="checked"> <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9" stroke="black" stroke-width="1" fill="#66CCFF"/></svg> Body measurement<br>
+                <input type="checkbox" name="parent_trait" value="Cancer"  checked="checked"> <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9" stroke="black" stroke-width="1" fill="#BC80BD"/></svg> Cancer<br>
+                <input type="checkbox" name="parent_trait" value="Inflammatory measurement"  checked="checked"> <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9" stroke="black" stroke-width="1" fill="#CCEBC5"/></svg> Inflammatory measurement<br>
+                <input type="checkbox" name="parent_trait" value="Immune system disorder"  checked="checked"> <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9" stroke="black" stroke-width="1" fill="#FFED6F"/></svg> Immune system disorder<br>
+                <input type="checkbox" name="parent_trait" value="Other measurement"  checked="checked"> <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9" stroke="black" stroke-width="1" fill="#006699"/></svg> Other measurement<br>
+                <input type="checkbox" name="parent_trait" value="Liver enzyme measurement"  checked="checked"> <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9" stroke="black" stroke-width="1" fill="#669900"/></svg> Liver enzyme measurement<br>
+                <input type="checkbox" name="parent_trait" value="Other disease"  checked="checked"> <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9" stroke="black" stroke-width="1" fill="#FF3399"/></svg> Other disease<br>
+                <input type="checkbox" name="parent_trait" value="Digestive system disorder"  checked="checked"> <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9" stroke="black" stroke-width="1" fill="#B7704C"/></svg> Digestive system disorder<br>
+            </form>
+        </div>
+    </div>
+
+    <!-- Submit filter -->
+    <div class="diagramFilter">
         <p><button id="filter_button">Filter diagram</button></p>
     </div>
 </div>

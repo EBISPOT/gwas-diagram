@@ -40,7 +40,7 @@ function get_radius(hit){
 }
 
 // selection object:
-var svg = d3.select("svg")
+var svg = d3.select("svg#svgEmbed")
     .attr("width", 3000)
     .attr("height", 3000);
 

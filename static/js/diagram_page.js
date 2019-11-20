@@ -23,6 +23,13 @@ function parseForm() {
         parameters.append('ancestry', $('option[name="ancestry"]:selected').val());
     }
 
+    // Fetch selected unchecked trait categories:
+    var checked_terms = [];
+    $.each($("input[name='parent_trait']:checked"), function(){
+                checked_terms.push($(this).val());
+            });
+    parameters.append("parent_term", checked_terms.join("|"));
+
     return(parameters);
 }
 

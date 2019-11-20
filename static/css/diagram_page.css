@@ -22,3 +22,15 @@
 
   white-space:pre-line;
 }
+
+.filter {
+    margin-left: 30px;
+}
+
+.filterGroup {
+    margin-bottom: 20px;
+}
+
+.filterOptions {
+    margin-left: 10px;
+}

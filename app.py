@@ -39,6 +39,7 @@ fiterParams.add_argument('pvalue', type=str, required=False, help='Upper boundar
 fiterParams.add_argument('sample', type=str, required=False, help='Part of the sample description.')
 fiterParams.add_argument('ancestry', type=str, required=False, help='Broad ancestry description of the samples.')
 fiterParams.add_argument('catalog_date', type=str, required=False, help='Upper boundary for the catalog publish date (eg. 2014-01-03).')
+fiterParams.add_argument('parent_term', type=str, required=False, help='Pipe separated list of required parent terms.')
 
 
 # Enabling cross-site scripting (might need to be removed later):

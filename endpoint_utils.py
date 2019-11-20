@@ -8,6 +8,10 @@ def validate_paramters(args):
     # These parameters are filled and validated:
     filterParameters = {}
 
+    # Parsing parent traits:
+    if isinstance(args['parent_term'], str):
+        filterParameters['parent_term'] = args['parent_term'].split('|')
+
     # Parsing pubmed ID:
     filterParameters['pmid'] = args['pmid'] if isinstance(args['pmid'], int) else False
 
