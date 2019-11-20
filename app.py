@@ -40,10 +40,11 @@ fiterParams.add_argument('sample', type=str, required=False, help='Part of the s
 fiterParams.add_argument('ancestry', type=str, required=False, help='Broad ancestry description of the samples.')
 fiterParams.add_argument('catalog_date', type=str, required=False, help='Upper boundary for the catalog publish date (eg. 2014-01-03).')
 fiterParams.add_argument('parent_term', type=str, required=False, help='Pipe separated list of required parent terms.')
+fiterParams.add_argument('dataType', type=str, required=False, help='Requested data type: "traits" or "associations".')
 
 
 # Enabling cross-site scripting (might need to be removed later):
-# cors = CORS(app)
+# cors = CORS(app)s
 
 # Parameters for filtering template spreadsheets:
 # fiterParams = api.model( "Diagram data filter application",{

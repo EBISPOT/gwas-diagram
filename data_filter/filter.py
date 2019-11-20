@@ -32,4 +32,11 @@ def filter(association_df, filter_parameters):
         filtered_df = filtered_df.loc[(~filtered_df['BROAD ANCESTRAL CATEGORY'].isna()) & (filtered_df['BROAD ANCESTRAL CATEGORY'].str.match(pat = '.*{}.*'.format(filter_parameters['ancestry'])))]
 
     print('[Info] Number of associations: {}'.format(len(filtered_df)))
+
+    ##
+    ## Filter based on the requested data type:
+    ##
+    if filter_parameters['dataType'] == 'traits':
+        filtered_df = filtered_df[['REGION', 'EFO_PARENT', 'MAPPED_TRAIT']].drop_duplicates()
+
     return filtered_df

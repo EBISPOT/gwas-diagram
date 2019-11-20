@@ -18,6 +18,9 @@ function parseForm() {
         }
     }
 
+    // Parse requested data type:
+    parameters.append("dataType", $('input[name="dataType"]:checked').val());
+
     // Fetch ancestry:
     if( $('option[name="ancestry"]:selected').val() ){
         parameters.append('ancestry', $('option[name="ancestry"]:selected').val());
@@ -74,7 +77,7 @@ $("#filter_button").click(function(){
             window.visualization_type = $('input[name="visType"]:checked').val();
 
             // Update scale:
-            window.scale = $('option[name="scale"]:selected').val();
+            window.scale = Number($('option[name="scale"]:selected').val());
 
             // Once the response is here, we plot:
             draw_diagram();

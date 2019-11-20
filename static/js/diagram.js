@@ -35,7 +35,7 @@ function draw_diagram(){
 function get_radius(hit){
 
     // Constant now is derived from the scale:
-    var constant = 15 * window.scale;
+    var constant = 5 * window.scale;
     return Math.sqrt(constant * hit / Math.PI)
 }
 
@@ -283,8 +283,8 @@ draw_rectangles = function(cb_name, coordinates){
     var y_offset = 0;
 
     // Initialize constants:
-    var row_size = 28;
-    var unit_size = 7;
+    var row_size = 200 / (1 + window.scale);
+    var unit_size = (window.scale +  1);
 
     // Create a group for the band:
     var group_id = 'group_'+cb_name.replace('.','_');
