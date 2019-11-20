@@ -32,7 +32,7 @@ function draw_diagram(){
 }
 
 function get_radius(hit){
-    var constant = 7.08
+    var constant = 15
     return Math.sqrt(constant * hit / Math.PI)
 }
 
@@ -280,8 +280,8 @@ draw_rectangles = function(cb_name, coordinates){
     var y_offset = 0;
 
     // Initialize constants:
-    var row_size = 60;
-    var unit_size = 3;
+    var row_size = 28;
+    var unit_size = 7;
 
     // Create a group for the band:
     var group_id = 'group_'+cb_name.replace('.','_');

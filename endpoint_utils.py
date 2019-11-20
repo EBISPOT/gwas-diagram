@@ -54,7 +54,7 @@ def reshape_data(association_df):
     ## Once the data is filtered, we have to reshape the data into the final form
 
     # The dataframe is grouped by region and EFO_PARENT then get count:
-    summary = association_df.groupby(['REGION', 'EFO_PARENT']).size()
+    summary = association_df[['REGION', 'EFO_PARENT', 'MAPPED_TRAIT']].drop_duplicates().groupby(['REGION', 'EFO_PARENT']).size()
 
     # The multi indexed series is then converted into a dictionary:
     dictionary = summary.unstack(fill_value = 0).to_dict(orient='index')
