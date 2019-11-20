@@ -1,4 +1,5 @@
 // some global variable:
+var visualization_type = 'rectangles';
 var response = {};
 var cb_sort_positions = {};
 var color_mapping = {
@@ -23,7 +24,10 @@ var color_mapping = {
 
 // Draw shit:
 function draw_diagram(){
-    // Adding chromosome 1 to the diagram:
+    // Wiping the svg field:
+    d3.selectAll(".cytoband_associations").remove();
+
+    // Adding all chromosomes to the diagram:
     d3.selectAll(".chromosome").each(Process_chromosome)
 }
 
@@ -56,64 +60,76 @@ function Process_chromosome() {
         // Look up the ID in the data:
         cb_ID = cb_ID.replace('cb','').replace("_",".");
         if ( cb_ID in window.response ){
-            var circles = draw_circles(cb_ID,coordinates);
+            if ( window.visualization_type == 'circles'){
+                draw_circles(cb_ID, coordinates);
+
+                // Aligning circles:
+                Object.keys(window.cb_sort_positions).forEach(adjust_circles);
+            }
+            else if(window.visualization_type == 'rectangles'){
+                draw_rectangles(cb_ID,coordinates);
+
+                // Aligning rectangles:
+                Object.keys(window.cb_sort_positions).forEach(adjust_rectangles);
+            }
+
         }
     })
 
-    // Aligning circles:
-    Object.keys(window.cb_sort_positions).forEach(function(chromosome) {
-
-        // sort both the q and p arms:
-        window.cb_sort_positions[chromosome]['p'].sort(function(a, b) {return  b[1] - a[1];});
-        window.cb_sort_positions[chromosome]['q'].sort(function(a, b) {return  a[1] - b[1];});
-
-        // Adjust spheres on the p arm:
-        var bottom = Number(window.cb_sort_positions[chromosome]['center']);
-        for (var band of window.cb_sort_positions[chromosome]['p']){
-            var radius = Number(band[2]);
-            var position = Number(band[1]);
-            var cb_id = band[0];
-
-            // band group selection:
-            var band_group = d3.select('#' + cb_id);
-
-            // If the position is below the current bottom:
-            if (bottom < position + radius){
-                var new_y_pos = bottom - radius;
-                band_group.attr("transform", `translate(70, ${new_y_pos})`);
-                bottom =  bottom - 2*radius;
-            }
-            else {
-                bottom =  position - radius;
-            }
-        }
-        // Adjust spheres on the p arm:
-        var top = Number(window.cb_sort_positions[chromosome]['center']);
-        for (var band of window.cb_sort_positions[chromosome]['q']){
-
-            var radius = Number(band[2]);
-            var position = Number(band[1]);
-            var cb_id = band[0];
-
-
-            // band group selection:
-            var band_group = d3.select('#' + cb_id);
-
-            // If the position is below the current bottom:
-            if (top > position - radius){
-                var new_y_pos = top + radius;
-                band_group.attr("transform", `translate(70, ${new_y_pos})`);
-                top =  top + (2 * radius);
-            }
-            else {
-                top = position + radius;
-            }
-        }
-    });
 
 }
 
-adjust_bands = function(chromosome) {
+adjust_rectangles = function(chromosome) {
+
+    // sort both the q and p arms:
+    window.cb_sort_positions[chromosome]['p'].sort(function(a, b) {return  b[1] - a[1];});
+    window.cb_sort_positions[chromosome]['q'].sort(function(a, b) {return  a[1] - b[1];});
+
+    // Adjust spheres on the p arm:
+    var bottom = Number(window.cb_sort_positions[chromosome]['center']);
+    for (var band of window.cb_sort_positions[chromosome]['p']){
+        var radius = Number(band[2]);
+        var position = Number(band[1]);
+        var cb_id = band[0];
+
+        // band group selection:
+        var band_group = d3.select('#' + cb_id);
+
+        // If the position is below the current bottom:
+        if (bottom < position + radius){
+            var new_y_pos = bottom - radius;
+            band_group.attr("transform", `translate(70, ${new_y_pos})`);
+            bottom =  bottom - radius - 2;
+        }
+        else {
+            bottom =  position - radius - 2;
+        }
+    }
+    // Adjust spheres on the p arm:
+    var top = Number(window.cb_sort_positions[chromosome]['center']);
+    for (var band of window.cb_sort_positions[chromosome]['q']){
+
+        var radius = Number(band[2]);
+        var position = Number(band[1]);
+        var cb_id = band[0];
+
+
+        // band group selection:
+        var band_group = d3.select('#' + cb_id);
+
+        // If the position is below the current bottom:
+        if (top > position - radius){
+            var new_y_pos = top + 2;
+            band_group.attr("transform", `translate(70, ${new_y_pos})`);
+            top =  top + radius + 2;
+        }
+        else {
+            top = position + radius + 2;
+        }
+    }
+}
+
+adjust_circles = function(chromosome) {
 
     // sort both the q and p arms:
     window.cb_sort_positions[chromosome]['p'].sort(function(a, b) {return  b[1] - a[1];});
@@ -204,7 +220,7 @@ function draw_circles(cb_id, coordinates){
     var chromosome = d3.select("#chromosome" + chr_name);
     var cb_group = chromosome.append('g')
         .attr('id', group_id)
-        .attr('class', 'cytoband_spheres');
+        .attr('class', 'cytoband_associations');
 
     // Start populating the sort position data:
     if ( ! (chr_name in window.cb_sort_positions )){
@@ -249,7 +265,7 @@ function draw_circles(cb_id, coordinates){
     cb_group.attr("transform", `translate(70,${coordinates[1]})`)
 }
 
-draw_rectangles = function(cb_name){
+draw_rectangles = function(cb_name, coordinates){
     // Parse chromosome name:
     var chromosome_name = cb_name.match('(.+)[pq]')[1];
 
@@ -258,7 +274,6 @@ draw_rectangles = function(cb_name){
 
     // Sorting and shit:
     var sorted_categories = filter_sort_data(cb_name);
-    console.log(sorted_categories);
 
     // Initialize offsets:
     var x_offset = 0;
@@ -288,10 +303,6 @@ draw_rectangles = function(cb_name){
         All_count = All_count + count;
 
         var count_set = split_count(count, x_offset, row_size);
-        console.log('** Count:' + count);
-        console.log('** Offset:     ' + x_offset);
-        console.log(count_set);
-        console.log('');
 
         // Drawing first row:
         if (count_set[0]){
@@ -346,18 +357,40 @@ draw_rectangles = function(cb_name){
     }
 
     // Add a thick boundary covering the entire box:
+    var box_height = Math.ceil(All_count /row_size) * unit_size;
     cb_group.append('rect')
+        .attr('id', 'container')
         .attr('x', 0)
         .attr('y', 0)
         .attr('width', row_size * unit_size)
-        .attr('height', Math.ceil(All_count /row_size) * unit_size)
+        .attr('height', box_height)
         .style("fill", 'none')
-        .style("stroke",'black')
-        .style("stroke-width", 1);
-    console.log(All_count);
+        .style("stroke",'white')
+        .style("stroke-width", 0.5);
 
     // Now translate the group to the proper place:
-    cb_group.attr("transform", `translate(70,50)`)
+    cb_group.attr("transform", `translate(70,${coordinates[1]})`);
+
+    // Start populating the sort position data:
+    if ( ! (chromosome_name in window.cb_sort_positions )){
+        var centre = chromosome.select("#centre" + chromosome_name).attr('d').split(' ')[1].split(',')[1];
+        window.cb_sort_positions[chromosome_name] = {
+            'q' : [],
+            'p' : [],
+            'center' : Number(centre)
+        };
+    }
+
+    // populate data:
+    if ( cb_name.match('p') ){
+        window.cb_sort_positions[chromosome_name]['p'].push([group_id, Number(coordinates[1]), box_height]);
+    }
+    else if (cb_name.match('q')){
+        window.cb_sort_positions[chromosome_name]['q'].push([group_id, Number(coordinates[1]), box_height]);
+    }
+    else {
+        return
+    }
 
 };
 

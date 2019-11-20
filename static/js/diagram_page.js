@@ -45,9 +45,6 @@ $("#filter_button").click(function(){
     // Show report box:
     $("#requestBody").show();
 
-    // Wiping the svg field:
-    d3.selectAll(".cytoband_spheres").remove();
-
     // Wiping the sort data:
     window.cb_sort_positions = {};
 
@@ -71,9 +68,17 @@ $("#filter_button").click(function(){
             $("#outputContainer").show();
             $("#outputBox").append(`<p>${pretty}</p>`);
 
+            // Extract the type of the visualization:
+            window.visualization_type = $('input[name="visType"]:checked').val();
+
             // Once the response is here, we plot:
-            // draw_diagram();
-            draw_rectangles('1p13.3');
+            draw_diagram();
         }
     })
 });
+
+/*
+Extract state of the radio button:
+ */
+
+var $selected = $('input[name="RadioGroup"]:checked', '#someform');
