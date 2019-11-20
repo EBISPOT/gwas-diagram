@@ -36,12 +36,6 @@ function generateCurlCommand(formData){
     return curlCommand;
 }
 
-// If requested show downloaded data:
-$("#showData").click(function(){
-    $("#outputBox").toggle();
-});
-
-
 // Upon hitting submit button: parse input fields and then fetch the corresponding filtered data
 $("#filter_button").click(function(){
 
@@ -68,11 +62,6 @@ $("#filter_button").click(function(){
 
             // Assigning the response to the global variable:
             window.response = response;
-
-            // Show response:
-            var pretty = JSON.stringify(response,null,2);
-            $("#outputContainer").show();
-            $("#outputBox").append(`<p>${pretty}</p>`);
 
             // Extract the type of the visualization:
             window.visualization_type = $('input[name="visType"]:checked').val();
