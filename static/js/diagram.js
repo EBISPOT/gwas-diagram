@@ -1,3 +1,14 @@
+/*
+Building the diagram related components of the page once the page is loaded
+ */
+$( document ).ready(function() {
+    $.get('../static/svg/chromosomes.svg', function(data){
+        $('#svgEmbed').append(data.documentElement)
+    })
+});
+
+
+
 // some global variable:
 var visualization_type = 'rectangles';
 var response = {};
