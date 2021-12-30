@@ -1,4 +1,4 @@
-from flask import Flask, request, send_file,render_template
+from flask import Flask, request, send_file, render_template
 from flask_restplus import Resource, Api, reqparse
 
 # from flask_cors import CORS
@@ -57,7 +57,7 @@ fiterParams.add_argument('dataType', type=str, required=False, help='Requested d
 parent_mapping_file = Configuration.parent_mapping_file
 association_file = Configuration.association_file
 ancestry_file = Configuration.ancestry_file
-gwas_data = load_data(parent_mapping_file,association_file,ancestry_file)
+gwas_data = load_data(parent_mapping_file, association_file, ancestry_file)
 
 @api.route('/v1/filter')
 @api.expect(fiterParams, validate=True)
