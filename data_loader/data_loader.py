@@ -46,7 +46,7 @@ class DataLoader:
 
             # saving data into a pickled file:
             logging.info(f'Saving pickle file: {self.GWAS_DATA_PICKLE_FILE}.')
-            pickle.dump(pooled_terms, open(self.pooled_data_file, "wb"))
+            pickle.dump(self.pooled_terms, open(self.GWAS_DATA_PICKLE_FILE, "wb"))
 
     def get_data(self) -> pd.DataFrame:
         """Returns the pooled association as a dataframe."""

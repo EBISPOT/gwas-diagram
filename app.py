@@ -1,13 +1,14 @@
 from flask import Flask, request, send_file, render_template
-from flask_restplus import Resource, Api, reqparse
+from flask_restx import Resource, Api, reqparse
 
 # from flask_cors import CORS
 from flask import Blueprint, url_for
-import sys, os
+import os
+import sys
 # from urllib.parse import unquote
 
 # Import logging related functions:
-# import logging
+import logging
 
 # Importing custom functions:
 import endpoint_utils as eu
@@ -42,6 +43,12 @@ fiterParams.add_argument('catalog_date', type=str, required=False, help='Upper b
 fiterParams.add_argument('parent_term', type=str, required=False, help='Pipe separated list of required parent terms.')
 fiterParams.add_argument('dataType', type=str, required=False, help='Requested data type: "traits" or "associations".')
 
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s %(levelname)s %(module)s - %(funcName)s: %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S',
+)
+logging.StreamHandler(sys.stderr)
 
 # Enabling cross-site scripting (might need to be removed later):
 # cors = CORS(app)s
