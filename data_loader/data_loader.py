@@ -2,6 +2,7 @@
 import logging
 import os
 import pickle
+import requests
 
 import numpy as np
 import pandas as pd
@@ -12,41 +13,57 @@ class DataLoader:
     # Default gwas_file name:
     GWAS_DATA_PICKLE_FILE = os.path.dirname(os.path.realpath(__file__)) + '/pooled_terms.pkl'
 
-    def __init__(self, parent_mapping_file: str, association_file: str, ancestry_file: str) -> None:
+    def __init__(self, parameters) -> None:
 
         # Store input:
-        self.parent_mapping_file = parent_mapping_file
-        self.association_file = association_file
-        self.ancestry_file = ancestry_file
+        self.parent_mapping_file = parameters.parent_mapping_file
+        self.association_file = parameters.association_file
+        self.ancestry_file = parameters.ancestry_file
+        self.release_stats_url = parameters.release_stats
 
-        # Load the association data if the file exists:
-        try:
-            logging.info('Trying to load dataset ({})....'.format(self.GWAS_DATA_PICKLE_FILE))
-            pooled_terms = pickle.load(open(self.GWAS_DATA_PICKLE_FILE, "rb"))
-            self.pooled_terms = pooled_terms
+        # Get the release date of the GWAS Catalog:
+        self.release_date = self.__get_release_date()
+        logging.info(f'Most recent GWAS release date: {self.release_date}')
 
-        except FileNotFoundError:
+        # Test if the data is already downloaded:
+        if os.path.isfile(self.GWAS_DATA_PICKLE_FILE):
+            logging.info(f'Loading GWAS data from pickle file: {self.GWAS_DATA_PICKLE_FILE}')
+            exported_data = pickle.load(open(self.GWAS_DATA_PICKLE_FILE, "rb"))
+            exported_release_date = exported_data['release_date']
 
-            # Downloading and filtering data:
-            logging.warning('Pre-processed data was not found. Preparing now...')
+            if self.release_date == exported_release_date:
+                logging.info('Dataset loaded successfully.')
+                self.pooled_terms = exported_data['pooled_terms']
 
-            logging.info(f'Downloading parent file: {self.parent_mapping_file}.')
-            self.parent_mapping_df = self.__get_parent_dataframe()
+                return None
+            else:
+                logging.info(f'Dataset is outdated ({exported_release_date}). Downloading new dataset.')
 
-            logging.info(f'Downloading association file: {self.association_file}.')
-            self.association_df = self.__get_association_dataframe()
-            logging.info(f'Number of association: {len(self.association_df)}')
+        # Downloading and filtering data:
+        logging.warning('Preparing new dataset...')
 
-            logging.info(f'Downloading ancestry file: {self.ancestry_file}.')
-            self.ancestry_df = self.__get_ancestry_dataframe()
+        logging.info(f'Downloading parent file: {self.parent_mapping_file}.')
+        self.parent_mapping_df = self.__get_parent_dataframe()
 
-            # Pool associations with parent terms:
-            logging.info('Joining data...')
-            self.pooled_terms = self.__pool_dataframes()
+        logging.info(f'Downloading association file: {self.association_file}.')
+        self.association_df = self.__get_association_dataframe()
+        logging.info(f'Number of association: {len(self.association_df)}')
 
-            # saving data into a pickled file:
-            logging.info(f'Saving pickle file: {self.GWAS_DATA_PICKLE_FILE}.')
-            pickle.dump(self.pooled_terms, open(self.GWAS_DATA_PICKLE_FILE, "wb"))
+        logging.info(f'Downloading ancestry file: {self.ancestry_file}.')
+        self.ancestry_df = self.__get_ancestry_dataframe()
+
+        # Pool associations with parent terms:
+        logging.info('Joining data...')
+        self.pooled_terms = self.__pool_dataframes()
+
+        # saving data into a pickled file:
+        logging.info(f'Saving pickle file: {self.GWAS_DATA_PICKLE_FILE}.')
+        pickle.dump(
+            {
+                'release_date': self.release_date,
+                'pooled_terms': self.pooled_terms
+            }, open(self.GWAS_DATA_PICKLE_FILE, "wb")
+        )
 
     def get_data(self) -> pd.DataFrame:
         """Returns the pooled association as a dataframe."""
@@ -175,5 +192,12 @@ class DataLoader:
         pooled_df = pooled_df.loc[~pooled_df['EFO_PARENT'].isna()]
         return pooled_df
 
-    def __len__(self):
+    def __get_release_date(self) -> str:
+        """Returns the release date of the GWAS Catalog."""
+
+        response = requests.get(self.release_stats_url)
+        release_date = response.json()['date']
+        return release_date
+
+    def __len__(self) -> int:
         return len(self.pooled_terms)

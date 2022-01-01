@@ -18,7 +18,7 @@ def filter(association_df: pd.DataFrame, filter_parameters: dict) -> pd.DataFram
 
     # {"pmid": 123, "efo": "EFO_000123", "pvalue": false}
     if filter_parameters['pmid']:
-        filtered_df = filtered_df.loc[filtered_df.PUBMEDID == filter_parameters['pmid']]
+        filtered_df = filtered_df.loc[filtered_df.PUBMEDID == str(filter_parameters['pmid'])]
 
     if filter_parameters['trait']:
         filtered_df = filtered_df.loc[

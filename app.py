@@ -54,11 +54,7 @@ filterParams.add_argument('dataType', type=str, required=False,
 filterParams.add_argument('cytological_band', type=str, required=False, help='Cytological band of the sample.')
 
 # Loading data - loaded once, filtered after:
-gwas_data_loader = DataLoader(
-    Configuration.parent_mapping_file,
-    Configuration.association_file,
-    Configuration.ancestry_file
-)
+gwas_data_loader = DataLoader(Configuration)
 
 gwas_data = gwas_data_loader.get_data()
 
@@ -76,6 +72,7 @@ class diagramFilter(Resource):
 
         # Get filtered dataset:
         filteredData = filter(gwas_data, parameters)
+        logging.info(f'Number of associations/traits after filtering: {len(filteredData)}')
 
         # reshape the filtered data:
         reshaped_data = eu.reshape_data(filteredData)
