@@ -13,8 +13,6 @@ def filter(association_df: pd.DataFrame, filter_parameters: dict) -> pd.DataFram
     # Create a copy of the association df
     filtered_df = association_df.copy(deep=True)
 
-    print('[Info] Number of associations: {}'.format(len(filtered_df)))
-
     if 'parent_term' in filter_parameters and filter_parameters['parent_term']:
         filtered_df = filtered_df.loc[filtered_df.EFO_PARENT.isin(filter_parameters['parent_term'])]
 
@@ -51,7 +49,6 @@ def filter(association_df: pd.DataFrame, filter_parameters: dict) -> pd.DataFram
                 & (filtered_df['BROAD ANCESTRAL CATEGORY'].str.match(pat='.*{}.*'.format(filter_parameters['ancestry'])))
             ]
         )
-    print('[Info] Number of associations: {}'.format(len(filtered_df)))
 
     # Filter based on the requested data type:
     if filter_parameters['dataType'] == 'traits':
@@ -59,5 +56,9 @@ def filter(association_df: pd.DataFrame, filter_parameters: dict) -> pd.DataFram
             filtered_df[['REGION', 'EFO_PARENT', 'MAPPED_TRAIT']]
             .drop_duplicates()
         )
+
+    # Filter based on the cytological band:
+    if 'cytological_band' in filter_parameters and filter_parameters['cytological_band']:
+        filtered_df = filtered_df.loc[filtered_df.REGION == filter_parameters['cytological_band']]
 
     return filtered_df
