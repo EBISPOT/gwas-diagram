@@ -50,6 +50,7 @@ class DataLoader:
 
     def get_data(self) -> pd.DataFrame:
         """Returns the pooled association as a dataframe."""
+        logging.info(f'Returning {len(self.pooled_terms)} associations.')
         return self.pooled_terms
 
     def __get_parent_dataframe(self) -> pd.DataFrame:
