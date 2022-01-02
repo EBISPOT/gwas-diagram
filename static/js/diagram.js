@@ -48,8 +48,6 @@ var svg = (d3
 
 // This function loops through a full chromosome and extracts parameters:
 function processChromosome() {
-    // Extract chromosome name:
-    var chromosme_name = d3.select(this).attr("id").replace("chromosome", "");
 
     // Loop through all the cytobands of the chromosome:
     d3.select(this).selectAll("path").each(function () {
@@ -71,7 +69,7 @@ function processChromosome() {
                 Object.keys(window.cytobandSortPositions).forEach(adjustCircles);
             }
             else if (window.visualizationType == "rectangles") {
-                draw_rectangles(cytobandId, coordinates);
+                drawRectangles(cytobandId, coordinates);
 
                 // Aligning rectangles:
                 Object.keys(window.cytobandSortPositions).forEach(adjustRectangles);
@@ -269,7 +267,7 @@ function drawCircles(cytobandId, coordinates) {
     cytobandGroup.attr("transform", `translate(70,${coordinates[1]})`)
 }
 
-draw_rectangles = function (cytobandName, coordinates) {
+drawRectangles = function (cytobandName, coordinates) {
     // Parse chromosome name:
     var chromosomeName = cytobandName.match("(.+)[pq]")[1];
 
@@ -303,7 +301,7 @@ draw_rectangles = function (cytobandName, coordinates) {
         // Save count
         allCount = allCount + count;
 
-        var countSet = split_count(count, xOffset, rowSize);
+        var countSet = splitCount(count, xOffset, rowSize);
 
         // Drawing first row:
         if (countSet[0]) {
@@ -395,7 +393,7 @@ draw_rectangles = function (cytobandName, coordinates) {
 
 };
 
-split_count = function (count, xOffset, width) {
+splitCount = function (count, xOffset, width) {
     // This function calculates the split of the counts given the count the x-offset and the width
 
     var split = [0, 0, 0];
