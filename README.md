@@ -1,5 +1,7 @@
 # Experimenting with the GWAS Catalog diagram
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/a84a757cdf8d4cf5b27c0b2eb4f0844d)](https://app.codacy.com/gh/DSuveges/gwas-diagram?utm_source=github.com&utm_medium=referral&utm_content=DSuveges/gwas-diagram&utm_campaign=Badge_Grade_Settings)
+
 ## What do we have now
 
 1. Exported GWAS Catalog files are read and compiled into a pandas dataframe.
