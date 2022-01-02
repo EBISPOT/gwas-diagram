@@ -3,6 +3,7 @@ from logging import ERROR
 import numpy as np
 import pandas as pd
 
+
 def validate_paramters(args: dict) -> dict:
     """The parameters received by the endpoints are parsed and validated.py
 
@@ -23,22 +24,27 @@ def validate_paramters(args: dict) -> dict:
         filterParameters['parent_term'] = args['parent_term'].split('|')
 
     # Parsing pubmed ID:
-    filterParameters['pmid'] = args['pmid'] if isinstance(args['pmid'], int) else False
+    filterParameters['pmid'] = args['pmid'] if isinstance(
+        args['pmid'], int) else False
 
     # Parse EFO:
-    filterParameters['trait'] = args['trait'] if isinstance(args['trait'], str) else False
+    filterParameters['trait'] = args['trait'] if isinstance(
+        args['trait'], str) else False
 
     # Parse ancestry:
-    filterParameters['ancestry'] = args['ancestry'] if isinstance(args['ancestry'], str) else False
+    filterParameters['ancestry'] = args['ancestry'] if isinstance(
+        args['ancestry'], str) else False
 
     # Parse sample:
-    filterParameters['sample'] = args['sample'] if isinstance(args['sample'], str) else False
+    filterParameters['sample'] = args['sample'] if isinstance(
+        args['sample'], str) else False
 
     # Parse date:
     if isinstance(args['catalog_date'], str):
         try:
-            filterParameters['catalog_date'] = int(args['catalog_date'].replace("/", ""))
-        except:
+            filterParameters['catalog_date'] = int(
+                args['catalog_date'].replace("/", ""))
+        except ERROR:
             filterParameters['catalog_date'] = False
     else:
         filterParameters['catalog_date'] = False
@@ -49,13 +55,14 @@ def validate_paramters(args: dict) -> dict:
         scientific = pval.split('e')
         if len(scientific) == 2:
             try:
-                filterParameters['pvalue'] = -int(scientific[1]) - np.log10(float(scientific[0]))
+                filterParameters['pvalue'] = - \
+                    int(scientific[1]) - np.log10(float(scientific[0]))
             except ERROR:
                 filterParameters['pvalue'] = False
         else:
             try:
                 filterParameters['pvalue'] = -1 * np.log10(float(pval))
-            except:
+            except ERROR:
                 filterParameters['pvalue'] = False
 
     else:
@@ -92,6 +99,7 @@ def reshape_data(association_df: pd.DataFrame) -> dict:
 
     # Return dictionary:
     return dictionary
+
 
 def consolidate(association_df: pd.DataFrame) -> dict:
     """The dataframe is shaped into a dictionary."""
