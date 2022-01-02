@@ -29,20 +29,21 @@ function drawDiagram() {
     d3.selectAll(".cytoband_associations").remove();
 
     // Adding all chromosomes to the diagram:
-    d3.selectAll(".chromosome").each(processChromosome)
+    d3.selectAll(".chromosome").each(processChromosome);
 }
 
 function getRadius(hit) {
 
     // Constant now is derived from the scale:
     var constant = 5 * window.scale;
-    return Math.sqrt(constant * hit / Math.PI)
+    return Math.sqrt(constant * hit / Math.PI);
 }
 
 // selection object:
-var svg = d3.select("svg#svgEmbed")
+var svg = (d3
+    .select("svg#svgEmbed")
     .attr("width", 3000)
-    .attr("height", 3000);
+    .attr("height", 3000));
 
 
 // This function loops through a full chromosome and extracts parameters:
@@ -56,28 +57,28 @@ function processChromosome() {
         var node = d3.select(this);
 
         // Get node parameters:
-        var cb_ID = node.attr("id");
+        var cytobandId = node.attr("id");
 
         var coordinates = node.attr("d").split(" ")[1].split(",");
 
         // Look up the ID in the data:
-        cb_ID = cb_ID.replace("cb", "").replace("_", ".");
-        if (cb_ID in window.response) {
+        cytobandId = cytobandId.replace("cb", "").replace("_", ".");
+        if (cytobandId in window.response) {
             if (window.visualizationType == "circles") {
-                drawCircles(cb_ID, coordinates);
+                drawCircles(cytobandId, coordinates);
 
                 // Aligning circles:
                 Object.keys(window.cytobandSortPositions).forEach(adjustCircles);
             }
             else if (window.visualizationType == "rectangles") {
-                draw_rectangles(cb_ID, coordinates);
+                draw_rectangles(cytobandId, coordinates);
 
                 // Aligning rectangles:
                 Object.keys(window.cytobandSortPositions).forEach(adjustRectangles);
             }
 
         }
-    })
+    });
 
 
 }
@@ -130,7 +131,7 @@ adjustRectangles = function (chromosome) {
             top = position + radius + 2;
         }
     }
-}
+};
 
 adjustCircles = function (chromosome) {
 
@@ -213,16 +214,16 @@ function drawCircles(cytobandId, coordinates) {
     var sortedCategories = filterSortData(cytobandId);
 
     // TODO: This should look though, but works for now
-    var y_coord = 0;
-    var x_coord = 0;
+    var yCoordinates = 0;
+    var xCoordinates = 0;
 
     // Group ID
-    var group_id = "group_" + cytobandId.replace(".", "_");
+    var groupId = "group_" + cytobandId.replace(".", "_");
 
     // Create a group:
     var chromosome = d3.select("#chromosome" + chromosomeName);
-    var cb_group = chromosome.append("g")
-        .attr("id", group_id)
+    var cytobandGroup = chromosome.append("g")
+        .attr("id", groupId)
         .attr("class", "cytoband_associations");
 
     // Start populating the sort position data:
@@ -237,10 +238,10 @@ function drawCircles(cytobandId, coordinates) {
 
     // populate data:
     if (cytobandId.match("p")) {
-        window.cytobandSortPositions[chromosomeName]["p"].push([group_id, Number(coordinates[1]), getRadius(sortedCategories[0][1])]);
+        window.cytobandSortPositions[chromosomeName]["p"].push([groupId, Number(coordinates[1]), getRadius(sortedCategories[0][1])]);
     }
     else if (cytobandId.match("q")) {
-        window.cytobandSortPositions[chromosomeName]["q"].push([group_id, Number(coordinates[1]), getRadius(sortedCategories[0][1])]);
+        window.cytobandSortPositions[chromosomeName]["q"].push([groupId, Number(coordinates[1]), getRadius(sortedCategories[0][1])]);
     }
     else {
         return
@@ -250,14 +251,14 @@ function drawCircles(cytobandId, coordinates) {
     // <circle r="4.0985145" fill="#FDB462" stroke="black" stroke-width="0.5" gwasname="t    ype II diabetes mellitus" class="gwas-trait EFO_0001360" fading="false" gwasassociation="11785,13327,13346" priority="0" />
     for (var category of sortedCategories) {
         var radius = getRadius(category[1]);
-        if (x_coord === 0) {
-            x_coord = radius
+        if (xCoordinates === 0) {
+            xCoordinates = radius
         } else {
-            x_coord = x_coord + radius
+            xCoordinates = xCoordinates + radius
         }
-        cb_group.insert("circle")
-            .attr("cx", x_coord)
-            .attr("cy", y_coord)
+        cytobandGroup.insert("circle")
+            .attr("cx", xCoordinates)
+            .attr("cy", yCoordinates)
             .attr("r", radius)
             .style("fill", category[2])
             .style("stroke", "black")
@@ -265,116 +266,116 @@ function drawCircles(cytobandId, coordinates) {
     }
 
     // Now translate the group to the proper place:
-    cb_group.attr("transform", `translate(70,${coordinates[1]})`)
+    cytobandGroup.attr("transform", `translate(70,${coordinates[1]})`)
 }
 
-draw_rectangles = function (cb_name, coordinates) {
+draw_rectangles = function (cytobandName, coordinates) {
     // Parse chromosome name:
-    var chromosome_name = cb_name.match("(.+)[pq]")[1];
+    var chromosomeName = cytobandName.match("(.+)[pq]")[1];
 
     // Sorting and shit:
-    var sorted_categories = filterSortData(cb_name);
+    var sortedCategories = filterSortData(cytobandName);
 
     // Initialize offsets:
-    var x_offset = 0;
-    var y_offset = 0;
+    var xOffset = 0;
+    var yOffset = 0;
 
     // Initialize constants:
-    var row_size = 200 / (1 + window.scale);
-    var unit_size = (window.scale + 1);
+    var rowSize = 200 / (1 + window.scale);
+    var unitSize = (window.scale + 1);
 
     // Create a group for the band:
-    var group_id = "group_" + cb_name.replace(".", "_");
-    var chromosome = d3.select("#chromosome" + chromosome_name);
-    var cb_group = chromosome.append("g")
-        .attr("id", group_id)
+    var groupId = "group_" + cytobandName.replace(".", "_");
+    var chromosome = d3.select("#chromosome" + chromosomeName);
+    var cytobandGroup = chromosome.append("g")
+        .attr("id", groupId)
         .attr("class", "cytoband_associations");
 
-    var All_count = 0; // To track the full count for the cytoband
+    var allCount = 0; // To track the full count for the cytoband
 
     // Looping through all categories and draw a corresponding rectangle:
-    for (var group of sorted_categories) {
+    for (var group of sortedCategories) {
 
         // extract values:
         var count = group[1];
         var color = group[2];
 
         // Save count
-        All_count = All_count + count;
+        allCount = allCount + count;
 
-        var count_set = split_count(count, x_offset, row_size);
+        var countSet = split_count(count, xOffset, rowSize);
 
         // Drawing first row:
-        if (count_set[0]) {
-            cb_group.append("rect")
-                .attr("x", x_offset * unit_size)
-                .attr("y", y_offset * unit_size)
-                .attr("width", count_set[0] * unit_size)
-                .attr("height", unit_size)
+        if (countSet[0]) {
+            cytobandGroup.append("rect")
+                .attr("x", xOffset * unitSize)
+                .attr("y", yOffset * unitSize)
+                .attr("width", countSet[0] * unitSize)
+                .attr("height", unitSize)
                 .style("fill", color)
                 .style("stroke", color)
                 .style("stroke-width", 0.1);
 
             // Updating x,y-offset:
-            if (x_offset + count_set[0] === row_size) {
-                x_offset = 0;
-                y_offset = y_offset + 1;
+            if (xOffset + countSet[0] === rowSize) {
+                xOffset = 0;
+                yOffset = yOffset + 1;
             }
             else {
-                x_offset = x_offset + count_set[0];
+                xOffset = xOffset + countSet[0];
             }
         }
 
         // Drawing the second row:
-        if (count_set[1]) {
+        if (countSet[1]) {
 
-            cb_group.append("rect")
+            cytobandGroup.append("rect")
                 .attr("x", 0)
-                .attr("y", y_offset * unit_size)
-                .attr("width", row_size * unit_size)
-                .attr("height", count_set[1] * unit_size)
+                .attr("y", yOffset * unitSize)
+                .attr("width", rowSize * unitSize)
+                .attr("height", countSet[1] * unitSize)
                 .style("fill", color)
                 .style("stroke", color)
                 .style("stroke-width", 0.1);
 
-            y_offset = y_offset + count_set[1];
+            yOffset = yOffset + countSet[1];
         }
 
         // Drawing thir row:
-        if (count_set[2]) {
-            cb_group.append("rect")
+        if (countSet[2]) {
+            cytobandGroup.append("rect")
                 .attr("x", 0)
-                .attr("y", y_offset * unit_size)
-                .attr("width", count_set[2] * unit_size)
-                .attr("height", unit_size)
+                .attr("y", yOffset * unitSize)
+                .attr("width", countSet[2] * unitSize)
+                .attr("height", unitSize)
                 .style("fill", color)
                 .style("stroke", color)
                 .style("stroke-width", 0.1);
 
             // Updating x,y-offset:
-            x_offset = count_set[2];
+            xOffset = countSet[2];
         }
     }
 
     // Add a thick boundary covering the entire box:
-    var box_height = Math.ceil(All_count / row_size) * unit_size;
-    cb_group.append("rect")
+    var boxHeight = Math.ceil(allCount / rowSize) * unitSize;
+    cytobandGroup.append("rect")
         .attr("id", "container")
         .attr("x", 0)
         .attr("y", 0)
-        .attr("width", row_size * unit_size)
-        .attr("height", box_height)
+        .attr("width", rowSize * unitSize)
+        .attr("height", boxHeight)
         .style("fill", "none")
         .style("stroke", "white")
         .style("stroke-width", 0.5);
 
     // Now translate the group to the proper place:
-    cb_group.attr("transform", `translate(70,${coordinates[1]})`);
+    cytobandGroup.attr("transform", `translate(70,${coordinates[1]})`);
 
     // Start populating the sort position data:
-    if (!(chromosome_name in window.cytobandSortPositions)) {
-        var centre = chromosome.select("#centre" + chromosome_name).attr("d").split(" ")[1].split(",")[1];
-        window.cytobandSortPositions[chromosome_name] = {
+    if (!(chromosomeName in window.cytobandSortPositions)) {
+        var centre = chromosome.select("#centre" + chromosomeName).attr("d").split(" ")[1].split(",")[1];
+        window.cytobandSortPositions[chromosomeName] = {
             "q": [],
             "p": [],
             "center": Number(centre)
@@ -382,11 +383,11 @@ draw_rectangles = function (cb_name, coordinates) {
     }
 
     // populate data:
-    if (cb_name.match("p")) {
-        window.cytobandSortPositions[chromosome_name]["p"].push([group_id, Number(coordinates[1]), box_height]);
+    if (cytobandName.match("p")) {
+        window.cytobandSortPositions[chromosomeName]["p"].push([groupId, Number(coordinates[1]), boxHeight]);
     }
-    else if (cb_name.match("q")) {
-        window.cytobandSortPositions[chromosome_name]["q"].push([group_id, Number(coordinates[1]), box_height]);
+    else if (cytobandName.match("q")) {
+        window.cytobandSortPositions[chromosomeName]["q"].push([groupId, Number(coordinates[1]), boxHeight]);
     }
     else {
         return
@@ -394,14 +395,14 @@ draw_rectangles = function (cb_name, coordinates) {
 
 };
 
-split_count = function (count, x_offset, width) {
+split_count = function (count, xOffset, width) {
     // This function calculates the split of the counts given the count the x-offset and the width
 
     var split = [0, 0, 0];
 
     // get first count:
-    if (x_offset !== 0) {
-        split[0] = (width - x_offset >= count) ? count : width - x_offset;
+    if (xOffset !== 0) {
+        split[0] = (width - xOffset >= count) ? count : width - xOffset;
 
         // If the first row is not yet full:
         if (count === split[0]) { return split; }

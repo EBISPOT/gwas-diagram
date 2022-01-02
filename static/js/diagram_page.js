@@ -2,7 +2,7 @@
 $(document).ready(function () {
     $.get("../static/svg/chromosomes.svg", function (data) {
         $("#svgEmbed").append(data.documentElement);
-    })
+    });
 });
 
 
@@ -27,11 +27,11 @@ function parseForm() {
     }
 
     // Fetch selected unchecked trait categories:
-    var checked_terms = [];
+    var checkedTerms = [];
     $.each($("input[name=\"parent_trait\"]:checked"), function () {
-        checked_terms.push($(this).val());
+        checkedTerms.push($(this).val());
     });
-    parameters.append("parent_term", checked_terms.join("|"));
+    parameters.append("parent_term", checkedTerms.join("|"));
 
     return (parameters);
 }
@@ -56,7 +56,7 @@ $("#filter_button").click(function () {
     $("#requestBody").show();
 
     // Wiping the sort data:
-    window.cb_sort_positions = {};
+    window.cytobandSortPositions = {};
 
     // hostname:
     var jqxhr = $.ajax({
@@ -74,13 +74,13 @@ $("#filter_button").click(function () {
             window.response = response;
 
             // Extract the type of the visualization:
-            window.visualization_type = $("input[name=\"visType\"]:checked").val();
+            window.visualizationType = $("input[name=\"visType\"]:checked").val();
 
             // Update scale:
             window.scale = Number($("option[name=\"scale\"]:selected").val());
 
             // Once the response is here, we plot:
-            draw_diagram();
+            drawDiagram();
         }
     })
 });
