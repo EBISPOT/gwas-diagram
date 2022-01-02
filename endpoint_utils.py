@@ -12,7 +12,6 @@ def validate_paramters(args: dict) -> dict:
     Returns:
         dict -- dictionary with the validated arguments ready to be used as filters.
     """
-
     filterParameters = {}
 
     # datatype tells if associations or traits are requested:
@@ -82,7 +81,6 @@ def reshape_data(association_df: pd.DataFrame) -> dict:
 
     Returns: {dict} -- dictionary with the following structure:
     """
-
     # The dataframe is grouped by region and EFO_PARENT then get count:
     summary = (
         association_df
@@ -103,7 +101,6 @@ def reshape_data(association_df: pd.DataFrame) -> dict:
 
 def consolidate(association_df: pd.DataFrame) -> dict:
     """The dataframe is shaped into a dictionary."""
-
     # Once the data is filtered, we have to reshape the data into the final form
     columns_map = {
         'PUBMEDID': 'pmid',
