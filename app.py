@@ -1,18 +1,19 @@
-from flask import Flask, request, send_file,render_template
-from flask_restplus import Resource, Api, reqparse
+from flask import Flask, request, send_file, render_template
+from flask_restx import Resource, Api, reqparse
 
 # from flask_cors import CORS
 from flask import Blueprint, url_for
-import sys,os
+import os
+import sys
 # from urllib.parse import unquote
 
 # Import logging related functions:
-# import logging
+import logging
 
 # Importing custom functions:
 import endpoint_utils as eu
 from configuration.properties import Configuration
-from data_loader.data_loader import load_data
+from data_loader.data_loader import DataLoader
 from data_filter.filter import filter
 
 app = Flask(__name__)
@@ -27,7 +28,7 @@ api = Api(bp, default=u'GWAS Catalog diagram',
           default_label=u'GWAS Catalog updated diagram',
           description='This application filters GWAS Catalog association data to generate diagram.',
           doc='/documentation/',
-          title = 'API documentation')
+          title='API documentation')
 
 app.register_blueprint(bp)
 
@@ -42,6 +43,12 @@ fiterParams.add_argument('catalog_date', type=str, required=False, help='Upper b
 fiterParams.add_argument('parent_term', type=str, required=False, help='Pipe separated list of required parent terms.')
 fiterParams.add_argument('dataType', type=str, required=False, help='Requested data type: "traits" or "associations".')
 
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s %(levelname)s %(module)s - %(funcName)s: %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S',
+)
+logging.StreamHandler(sys.stderr)
 
 # Enabling cross-site scripting (might need to be removed later):
 # cors = CORS(app)s
@@ -54,10 +61,12 @@ fiterParams.add_argument('dataType', type=str, required=False, help='Requested d
 # })
 
 # Loading data - loaded once, filtered after:
-parent_mapping_file = Configuration.parent_mapping_file
-association_file = Configuration.association_file
-ancestry_file = Configuration.ancestry_file
-gwas_data = load_data(parent_mapping_file,association_file,ancestry_file)
+gwas_data_loader = DataLoader(
+    Configuration.parent_mapping_file,
+    Configuration.association_file,
+    Configuration.ancestry_file
+)
+gwas_data = gwas_data_loader.get_data()
 
 @api.route('/v1/filter')
 @api.expect(fiterParams, validate=True)
