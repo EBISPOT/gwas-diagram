@@ -20,7 +20,7 @@ cd gwas-diagram
 # build docker image
 docker build -t gwas-diagram .
 # run the app on port 0000
-`docker run -i -v ${PWD}:/application  -p 9000:8000 gwas-diagram gunicorn -b 0.0.0.0:8000 app:app -t 1000`
+docker run -i -v ${PWD}:/application  -p 9000:8000 gwas-diagram gunicorn -b 0.0.0.0:8000 app:app -t 1000
 #The first time around the app will need to pull the data, after that it'll be pickled on disk (and you can omit the `-t 1000` timeout for future runs)
 ```
 visit <http://localhost:9000/diagram> in your browser and try it out.
