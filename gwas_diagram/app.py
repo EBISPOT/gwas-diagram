@@ -8,10 +8,10 @@ from flask import Blueprint, Flask, render_template
 from flask_restx import Api, Resource
 
 # Importing custom functions:
-import endpoint_utils as eu
-from configuration.properties import Configuration
-from data_filter.data_filter import data_filter
-from data_loader.data_loader import DataLoader
+import gwas_diagram.endpoint_utils as eu
+from gwas_diagram.configuration.properties import Configuration
+from gwas_diagram.data_filter.data_filter import data_filter
+from gwas_diagram.data_loader.data_loader import DataLoader
 
 app = Flask(__name__)
 
@@ -41,12 +41,12 @@ app.register_blueprint(bp)
 filterParams = api.parser()
 filterParams.add_argument('pmid', type=int, required=False,
                           help='Pubmed ID of a requested publication.')
-filterParams.add_argument(
-    'trait', type=str, required=False, help='Trait of ontology term.')
+filterParams.add_argument('trait', type=str, required=False,
+                          help='Trait of ontology term.')
 filterParams.add_argument('pvalue', type=str, required=False,
                           help='Upper boundary of the p-value (eg. 1e-8).')
-filterParams.add_argument(
-    'sample', type=str, required=False, help='Part of the sample description.')
+filterParams.add_argument('sample', type=str, required=False,
+                          help='Part of the sample description.')
 filterParams.add_argument('ancestry', type=str, required=False,
                           help='Broad ancestry description of the samples.')
 filterParams.add_argument('catalog_date', type=str, required=False,

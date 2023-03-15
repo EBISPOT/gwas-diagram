@@ -119,7 +119,6 @@ def data_filter(association_df: pd.DataFrame,
     Returns:
         pd.DataFrame: A dataframe containing the filtered association data.
     """
-    print(filters)
     filtered_df = FilterDF(df=association_df.copy(deep=True))
     # Apply filters:
     filtered_df._filter_parent_term(parent_term=filters.get('parent_term'))
