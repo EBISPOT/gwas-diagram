@@ -13,6 +13,21 @@
 6. Based on the filters the diagram is updated.
 7. The application of filters is additive.
 
+### Run locally (with docker)
+
+```
+# clone this repo 
+git clone https://github.com/EBISPOT/gwas-diagram.git
+cd gwas-diagram
+# build docker image
+docker build -t gwas-diagram .
+# run the app on port 0000
+docker run -i -v ${PWD}:/application  -p 9000:8000 gwas-diagram gunicorn -b 0.0.0.0:8000 app:app -t 1000
+#The first time around the app will need to pull the data, after that it'll be pickled on disk (and you can omit the `-t 1000` timeout for future runs)
+```
+visit <http://localhost:9000/diagram> in your browser and try it out.
+
+
 ### REST endpoint usage
 
 ```bash
@@ -49,10 +64,6 @@ curl -X POST "http://localhost:9000/v1/filter" \
 ...
 ```
 
-
-### UI diagram test address
-
-`http://localhost:9000/diagram`
 
 ## Example diagram:
 
