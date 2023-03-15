@@ -24,19 +24,19 @@ def validate_paramters(args: dict) -> dict:
 
     # Parsing pubmed ID:
     filterParameters['pmid'] = args['pmid'] if isinstance(
-        args['pmid'], int) else False
+        args['pmid'], int) else None
 
     # Parse EFO:
     filterParameters['trait'] = args['trait'] if isinstance(
-        args['trait'], str) else False
+        args['trait'], str) else None
 
     # Parse ancestry:
     filterParameters['ancestry'] = args['ancestry'] if isinstance(
-        args['ancestry'], str) else False
+        args['ancestry'], str) else None
 
     # Parse sample:
     filterParameters['sample'] = args['sample'] if isinstance(
-        args['sample'], str) else False
+        args['sample'], str) else None
 
     # Parse date:
     if isinstance(args['catalog_date'], str):
@@ -44,9 +44,9 @@ def validate_paramters(args: dict) -> dict:
             filterParameters['catalog_date'] = int(
                 args['catalog_date'].replace("/", ""))
         except ERROR:
-            filterParameters['catalog_date'] = False
+            filterParameters['catalog_date'] = None
     else:
-        filterParameters['catalog_date'] = False
+        filterParameters['catalog_date'] = None
 
     # Parse p-value:
     if isinstance(args['pvalue'], str):
@@ -57,15 +57,15 @@ def validate_paramters(args: dict) -> dict:
                 filterParameters['pvalue'] = - \
                     int(scientific[1]) - np.log10(float(scientific[0]))
             except ERROR:
-                filterParameters['pvalue'] = False
+                filterParameters['pvalue'] = None
         else:
             try:
                 filterParameters['pvalue'] = -1 * np.log10(float(pval))
             except ERROR:
-                filterParameters['pvalue'] = False
+                filterParameters['pvalue'] = None
 
     else:
-        filterParameters['pvalue'] = False
+        filterParameters['pvalue'] = None
 
     # Parsing cytological band:
     if 'cytological_band' in args and isinstance(args['cytological_band'], str):
