@@ -1,20 +1,17 @@
-from flask import Flask, request, send_file, render_template
-from flask_restx import Resource, Api, reqparse
-
-# from flask_cors import CORS
-from flask import Blueprint, url_for
+import json
+import logging
 import os
 import sys
-# from urllib.parse import unquote
 
-# Import logging related functions:
-import logging
+# Import flask:
+from flask import Blueprint, Flask, render_template
+from flask_restx import Api, Resource
 
 # Importing custom functions:
 import endpoint_utils as eu
 from configuration.properties import Configuration
+from data_filter.data_filter import data_filter
 from data_loader.data_loader import DataLoader
-from data_filter.filter import filter
 
 app = Flask(__name__)
 
@@ -22,6 +19,14 @@ if 'BASE_PATH' not in os.environ:
     os.environ['BASE_PATH'] = ""
 
 bp = Blueprint('diagram', __name__, url_prefix=os.environ['BASE_PATH'])
+
+# Setting up logging here.
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s %(levelname)s %(module)s - %(funcName)s: %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S',
+)
+logging.StreamHandler(sys.stderr)
 
 # Initialize API with swagger parameters:
 api = Api(bp, default=u'GWAS Catalog diagram',
@@ -32,69 +37,92 @@ api = Api(bp, default=u'GWAS Catalog diagram',
 
 app.register_blueprint(bp)
 
-# Preparing for filter paramters:
-fiterParams = api.parser()
-fiterParams.add_argument('pmid', type=int, required=False, help='Pubmed ID of a requested publication.')
-fiterParams.add_argument('trait', type=str, required=False, help='Trait of ontology term.')
-fiterParams.add_argument('pvalue', type=str, required=False, help='Upper boundary of the p-value (eg. 1e-8).')
-fiterParams.add_argument('sample', type=str, required=False, help='Part of the sample description.')
-fiterParams.add_argument('ancestry', type=str, required=False, help='Broad ancestry description of the samples.')
-fiterParams.add_argument('catalog_date', type=str, required=False, help='Upper boundary for the catalog publish date (eg. 2014-01-03).')
-fiterParams.add_argument('parent_term', type=str, required=False, help='Pipe separated list of required parent terms.')
-fiterParams.add_argument('dataType', type=str, required=False, help='Requested data type: "traits" or "associations".')
-
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s %(levelname)s %(module)s - %(funcName)s: %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S',
-)
-logging.StreamHandler(sys.stderr)
-
-# Enabling cross-site scripting (might need to be removed later):
-# cors = CORS(app)s
-
-# Parameters for filtering template spreadsheets:
-# fiterParams = api.model( "Diagram data filter application",{
-#     'pmid' : fields.String(description="Pubmed ID of a requested publication", required=False, default=False),
-#     'efo' : fields.String(description="EFO id of the term", required=False, default=False),
-#     'pvalue' : fields.String(description="Upper boundary of the p-value (eg. 1e-8)", required=False, default=False),
-# })
+# List of parameters to be used to filter data:
+filterParams = api.parser()
+filterParams.add_argument('pmid', type=int, required=False,
+                          help='Pubmed ID of a requested publication.')
+filterParams.add_argument(
+    'trait', type=str, required=False, help='Trait of ontology term.')
+filterParams.add_argument('pvalue', type=str, required=False,
+                          help='Upper boundary of the p-value (eg. 1e-8).')
+filterParams.add_argument(
+    'sample', type=str, required=False, help='Part of the sample description.')
+filterParams.add_argument('ancestry', type=str, required=False,
+                          help='Broad ancestry description of the samples.')
+filterParams.add_argument('catalog_date', type=str, required=False,
+                          help='Upper boundary for the catalog publish date (eg. 2014-01-03).')
+filterParams.add_argument('parent_term', type=str, required=False,
+                          help='Pipe separated list of required parent terms.')
+filterParams.add_argument('dataType', type=str, required=False,
+                          help='Requested data type: "traits" or "associations".')
+filterParams.add_argument('cytological_band', type=str,
+                          required=False, help='Cytological band of the sample.')
 
 # Loading data - loaded once, filtered after:
-gwas_data_loader = DataLoader(
-    Configuration.parent_mapping_file,
-    Configuration.association_file,
-    Configuration.ancestry_file
-)
+gwas_data_loader = DataLoader(Configuration)
+
 gwas_data = gwas_data_loader.get_data()
 
+
 @api.route('/v1/filter')
-@api.expect(fiterParams, validate=True)
-class diagarmFilter(Resource):
+@api.expect(filterParams, validate=True)
+class diagramFilter(Resource):
 
     @api.doc('Filter diagram data')
     def post(self):
         global gwas_data
 
         # Parsing and validating input paramters
-        parameters = eu.validate_paramters(fiterParams.parse_args())
-        print(parameters)
+        parameters = eu.validate_paramters(filterParams.parse_args())
+        logging.info(
+            f'Diagram filter. Parsed parameters: {json.dumps(parameters)}')
 
         # Get filtered dataset:
-        filteredData = filter(gwas_data, parameters)
+        filteredData = data_filter(gwas_data, parameters)
+        logging.info(
+            f'Number of associations/traits after filtering: {len(filteredData)}')
 
         # reshape the filtered data:
         reshaped_data = eu.reshape_data(filteredData)
 
         return reshaped_data
 
+
+@api.route('/v1/retrieve')
+@api.expect(filterParams, validate=True)
+class dataRetriever(Resource):
+
+    @api.doc('Extract diagram data for a given cytoloical band and trait category.')
+    def post(self):
+        global gwas_data
+
+        # Parsing and validating input paramters
+        parameters = eu.validate_paramters(filterParams.parse_args())
+        logging.info(
+            f'Association retriever. Parsed parameters: {json.dumps(parameters)}')
+
+        # For retrieving associations, the dataType needs to be set null:
+        if 'dataType' in parameters:
+            parameters['dataType'] = None
+
+        # Filter associations based on input parameters:
+        filteredData = data_filter(gwas_data, parameters)
+
+        # reshape the filtered data:
+        reshaped_data = eu.consolidate(filteredData)
+        logging.info(f'Number of associations returned: {len(reshaped_data)}')
+
+        return reshaped_data
+
 # The following endpoint serves testing purposes only to demonstrate the flexibility of the template generation.
+
+
 @app.route('/diagram')
 def template_test():
     return render_template('diagram.html')
 
+
 if __name__ == '__main__':
+
+    # Setting up the server:
     app.run(debug=False)
-
-    # Setting up logging here.
-
