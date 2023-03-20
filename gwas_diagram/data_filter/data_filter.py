@@ -2,14 +2,14 @@ from typing import Union
 import pandas as pd
 
 
-class FilterDF:
-    """Dataframe filtering class
+class FilterAssociationDF:
+    """Association Dataframe filtering class
     """
     def __init__(self,
                  df: pd.DataFrame) -> None:
         self.df = df
 
-    def _filter_parent_term(self, parent_term: Union[list, None]) -> None:
+    def parent_term(self, parent_term: Union[list, None]) -> None:
         """Filter df on EFO_PARENT
 
         Arguments:
@@ -18,7 +18,7 @@ class FilterDF:
         if parent_term is not None:
             self.df = self.df.loc[self.df.EFO_PARENT.isin(parent_term)]
 
-    def _filter_pmid(self, pmid: Union[int, None]) -> None:
+    def pmid(self, pmid: Union[int, None]) -> None:
         """Filter df on PUBMEDID
 
         Arguments:
@@ -27,7 +27,7 @@ class FilterDF:
         if pmid is not None:
             self.df = self.df.loc[self.df.PUBMEDID == str(pmid)]
 
-    def _filter_trait(self, trait: Union[str, None]) -> None:
+    def trait(self, trait: Union[str, None]) -> None:
         """Filter df on MAPPED_TRAIT or DISEASE/TRAIT
 
         Arguments:
@@ -40,7 +40,7 @@ class FilterDF:
                 | (self.df['DISEASE/TRAIT'].str.match(pat=pattern))
                 ]
 
-    def _filter_pvalue(self, pvalue: Union[float, None]) -> None:
+    def pvalue(self, pvalue: Union[float, None]) -> None:
         """Filter df on PVALUE_MLOG
 
         Arguments:
@@ -49,7 +49,7 @@ class FilterDF:
         if pvalue is not None:
             self.df = self.df.loc[self.df.PVALUE_MLOG >= pvalue]
 
-    def _filter_catalog_date(self, catalog_date: Union[int, None]) -> None:
+    def catalog_date(self, catalog_date: Union[int, None]) -> None:
         """Filter df on CATALOG_DATE
 
         Arguments:
@@ -58,7 +58,7 @@ class FilterDF:
         if catalog_date is not None:
             self.df = self.df.loc[self.df.CATALOG_DATE <= catalog_date]
 
-    def _filter_sample(self, sample: Union[str, None]) -> None:
+    def sample(self, sample: Union[str, None]) -> None:
         """Filter df on SAMPLE_DESCRIPTION
 
         Arguments:
@@ -72,7 +72,7 @@ class FilterDF:
                    .str.match(pat=pattern))
                 ])
 
-    def _filter_ancestry(self, ancestry: Union[str, None]) -> None:
+    def ancestry(self, ancestry: Union[str, None]) -> None:
         """Filter df on BROAD ANCESTRAL CATEGORY
 
         Arguments:
@@ -86,7 +86,7 @@ class FilterDF:
                    .str.match(pat=pattern))
                 ])
 
-    def _filter_data_type(self, data_type: Union[str, None]) -> None:
+    def data_type(self, data_type: Union[str, None]) -> None:
         """Filter df on data type: "traits" or "associations"
 
         Arguments:
@@ -99,7 +99,7 @@ class FilterDF:
                        .drop_duplicates()
                        )
 
-    def _filter_cytological_band(self, cytological_band: Union[str, None]) -> None:
+    def cytological_band(self, cytological_band: Union[str, None]) -> None:
         """Filter df on cytological_band
 
         Arguments:
@@ -119,15 +119,15 @@ def data_filter(association_df: pd.DataFrame,
     Returns:
         pd.DataFrame: A dataframe containing the filtered association data.
     """
-    filtered_df = FilterDF(df=association_df.copy(deep=True))
+    filter_df = FilterAssociationDF(df=association_df.copy(deep=True))
     # Apply filters:
-    filtered_df._filter_parent_term(parent_term=filters.get('parent_term'))
-    filtered_df._filter_pmid(pmid=filters.get('pmid'))
-    filtered_df._filter_trait(trait=filters.get('trait'))
-    filtered_df._filter_pvalue(pvalue=filters.get('pvalue'))
-    filtered_df._filter_catalog_date(catalog_date=filters.get('catalog_date'))
-    filtered_df._filter_sample(sample=filters.get('sample'))
-    filtered_df._filter_ancestry(ancestry=filters.get('ancestry'))
-    filtered_df._filter_data_type(data_type=filters.get('dataType'))
-    filtered_df._filter_cytological_band(cytological_band=filters.get('cytological_band'))
-    return filtered_df.df
+    filter_df.parent_term(parent_term=filters.get('parent_term'))
+    filter_df.pmid(pmid=filters.get('pmid'))
+    filter_df.trait(trait=filters.get('trait'))
+    filter_df.pvalue(pvalue=filters.get('pvalue'))
+    filter_df.catalog_date(catalog_date=filters.get('catalog_date'))
+    filter_df.sample(sample=filters.get('sample'))
+    filter_df.ancestry(ancestry=filters.get('ancestry'))
+    filter_df.data_type(data_type=filters.get('dataType'))
+    filter_df.cytological_band(cytological_band=filters.get('cytological_band'))
+    return filter_df.df
