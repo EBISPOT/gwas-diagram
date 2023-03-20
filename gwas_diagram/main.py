@@ -29,8 +29,6 @@ async def value_error_exception_handler(request: Request, exc: ValueError):
 #                   allow_origins=['*'])
 
 
-
-
 # v1 API (default)
 app.include_router(router,
                    prefix=API_BASE,

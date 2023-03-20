@@ -3,6 +3,7 @@ import json
 import logging
 
 from gwas_diagram.schemas.requests import RequestParameters
+from gwas_diagram.schemas.plot_annotations import IdeogramAnnots
 from gwas_diagram.configuration.properties import Configuration
 from gwas_diagram.data_filter.data_filter import data_filter
 from gwas_diagram.data_loader.data_loader import DataLoader
@@ -17,10 +18,12 @@ router = APIRouter(
 )
 
 # Loading data - loaded once, filtered after:
+# TODO: create authenticated endpoint for loading data suring data release
 gwas_data_loader = DataLoader(Configuration)
 gwas_data = gwas_data_loader.get_data()
 
-@router.get("/plotting_data")
+@router.get("/plotting_data", response_model = IdeogramAnnots
+            )
 async def get_diagram_data(req_filters: RequestParameters = Depends()):
     global gwas_data
     # Parsing and validating input paramters

@@ -80,6 +80,8 @@ def reshape_data(association_df: pd.DataFrame) -> dict:
     Arguments: association_df {pd.DataFrame} -- dataframe columns: REGION, EFO_PARENT
 
     Returns: {dict} -- dictionary with the following structure:
+    {region: {efo parent: count}} e.g.
+    {"13q14.11":{"Immune system disorder":3}}
     """
     # The dataframe is grouped by region and EFO_PARENT then get count:
     summary = (
