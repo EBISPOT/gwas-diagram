@@ -82,6 +82,14 @@ def reshape_data(association_df: pd.DataFrame) -> dict:
     Returns: {dict} -- dictionary with the following structure:
     {region: {efo parent: count}} e.g.
     {"13q14.11":{"Immune system disorder":3}}
+    
+    TODO: change for ideogram.js:
+    mappings = {
+        "chr": "CHR_ID",
+        "start": 
+    
+    
+    
     """
     # The dataframe is grouped by region and EFO_PARENT then get count:
     summary = (

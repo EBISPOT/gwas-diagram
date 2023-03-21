@@ -1,6 +1,9 @@
 """
 Schema for defining the response required for the 
 Ideogram.js library.
+We can use "name" for rsid.
+trachIndex is set for each parent trait catagory.
+We could also send the parent traits and their colours/indices via the payload.
 """
 
 from typing import Union, NamedTuple

@@ -5,3 +5,4 @@ class Configuration():
     association_file = 'https://www.ebi.ac.uk/gwas/api/search/downloads/alternative'
     ancestry_file = 'https://www.ebi.ac.uk/gwas/api/search/downloads/ancestry'
     release_stats = 'https://www.ebi.ac.uk/gwas/api/search/stats'
+    

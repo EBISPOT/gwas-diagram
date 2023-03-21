@@ -25,8 +25,8 @@ async def value_error_exception_handler(request: Request, exc: ValueError):
 
 
 # configure CORS
-#app.add_middleware(CORSMiddleware, 
-#                   allow_origins=['*'])
+app.add_middleware(CORSMiddleware, 
+                   allow_origins=['*'])
 
 
 # v1 API (default)

@@ -10,8 +10,8 @@ from flask_restx import Api, Resource
 # Importing custom functions:
 import gwas_diagram.endpoint_utils as eu
 from gwas_diagram.configuration.properties import Configuration
-from gwas_diagram.data_filter.data_filter import data_filter
-from gwas_diagram.data_loader.data_loader import DataLoader
+from gwas_diagram.services.data_filter import data_filter
+from gwas_diagram.services.data_loader import DataLoader
 
 app = Flask(__name__)
 
