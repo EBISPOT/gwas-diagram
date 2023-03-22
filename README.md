@@ -15,8 +15,6 @@
 - [ ] Modify the ideogram.js to meet our needs
 - [ ] Frontend look and feel 
 - [ ] Deployment
-- [ ] Connect the filter params ui to the api
-- [ ] Maintain the colours from the legend
 - [ ] Potentially enforce constraints to avoid plotting too many tracks
 - [ ] Investigate use of histogram for visualising number of associations (plotting the length attr)
 
