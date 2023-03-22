@@ -2,12 +2,27 @@
 Schema for defining the response required for the 
 Ideogram.js library.
 We can use "name" for rsid.
-trachIndex is set for each parent trait catagory.
+trackIndex is set for each parent trait catagory.
 We could also send the parent traits and their colours/indices via the payload.
 """
 
 from typing import Union, NamedTuple
 from pydantic import BaseModel, Field
+from enum import Enum
+
+
+class ShapeEnum(Enum):
+    circle = 'circle'
+    triangle = 'triangle'
+    rectangle = 'rectangle'
+    narrowRectangle = 'narrow_rectangle'
+
+
+class AnnotationTrack(BaseModel):
+    id: int = None
+    displayName: str = None
+    color: str = None
+    shape: ShapeEnum = 'circle'
 
 
 class Annot(NamedTuple):
@@ -28,3 +43,8 @@ class ChromosomeAnnots(BaseModel):
 class IdeogramAnnots(BaseModel):
     keys: list = ["name", "start", "length", "trackIndex"]
     annots: list[ChromosomeAnnots] = None
+
+
+class Ideogram(BaseModel):
+    annotations: IdeogramAnnots = None
+    annotationTracks: list[AnnotationTrack] = None

@@ -3,7 +3,7 @@ import json
 import logging
 
 from gwas_diagram.schemas.requests import RequestParameters
-from gwas_diagram.schemas.plot_annotations import IdeogramAnnots
+from gwas_diagram.schemas.plot_annotations import Ideogram
 from gwas_diagram.services.main import DiagramData
 
 
@@ -16,7 +16,7 @@ router = APIRouter(
 
 
 @router.get("/plotting_data",
-            response_model=IdeogramAnnots)
+            response_model=Ideogram)
 async def get_diagram_data(req_filters: RequestParameters = Depends()):
     diagram_data = DiagramData(filters=req_filters)
     logger.info(
