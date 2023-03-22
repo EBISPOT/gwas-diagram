@@ -25,7 +25,7 @@ var annotationTracks = [
 
 async function getResponse() {
 	const response = await fetch(
-		'http://0.0.0.0:9000/v1/plotting_data?parent_term=Cancer%7CCardiovascular%20measurement%7CBody%20measurement%7CDigestive%20system%20disorder',
+		'http://0.0.0.0:9000/v1/plotting_data?parent_term=Cancer|Cardiovascular%20measurement',
 		{
 			method: 'GET',
 		}
