@@ -27,4 +27,4 @@ RUN poetry install
 EXPOSE 8000
 
 # Upon firing up the container, the app starts:
-CMD ["poetry", "run", "gunicorn", "-b", "0.0.0.0:8000", "gwas_diagram.app:app"]
+CMD ["poetry", "run", "uvicorn", "gwas_diagram.main:app", "--host", "0.0.0.0", "--port", "8000", "--timeout-keep-alive", "1000"]
