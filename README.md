@@ -82,6 +82,6 @@ see [ideogram.js](https://github.com/eweitz/ideogram/blob/master/api.md) for mor
 
 ## Example diagram:
 
-![Example of two parent trait categories represented, Cancer & Cardiovascular measurement](gwas_diagram/ideogram_Cancer_AND_Cardiovascular_measurement.png)
+![Example of six parent trait categories represented](gwas_diagram/ideogram_6_traits.png)
 
 ![Example of a single chromosome view, after clicking the deisired chromosome or point](gwas_diagram/single_chromosome_view.png)
