@@ -11,6 +11,11 @@ from pydantic import BaseModel, Field
 from enum import Enum
 
 
+class LayoutEnum(Enum):
+    tracks = 'tracks'
+    histogram = 'histogram'
+
+
 class ShapeEnum(Enum):
     circle = 'circle'
     triangle = 'triangle'
@@ -26,7 +31,7 @@ class AnnotationTrack(BaseModel):
 
 
 class Annot(NamedTuple):
-    name: Union[str, list] = Field(None, example="rs1")
+    name: str | list | None = Field(None, example="rs1")
     start: int = Field(None, example=1)
     length: int = Field(None, example=1)
     trackIndex: int = Field(None, example=1)
@@ -40,11 +45,12 @@ class ChromosomeAnnots(BaseModel):
     annots: list[Annot] = Field(None, example=["rs1", 1, 1, 1])
 
 
-class IdeogramAnnots(BaseModel):
+class AllAnnots(BaseModel):
     keys: list = ["name", "start", "length", "trackIndex"]
     annots: list[ChromosomeAnnots] = None
 
 
-class Ideogram(BaseModel):
-    annotations: IdeogramAnnots = None
+class IdeogramAnnotations(BaseModel):
+    annotations: AllAnnots = None
     annotationTracks: list[AnnotationTrack] = None
+    annotationsLayout: LayoutEnum = 'tracks'
