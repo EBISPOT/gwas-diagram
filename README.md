@@ -6,11 +6,8 @@
 
 1. Exported GWAS Catalog files are read and compiled into a pandas dataframe.
 2. The dataframe is persisted on disk in a pickle file.
-3. The filtering endpoint of the REST API accepts parameters to filter associations at `/v1/plotting_data`
+3. The filtering endpoint of the REST API accepts parameters to filter associations at `/v1/annotations` or `/v1/histogram` depending on whether you want a circle plot that aggregates associations within a region + parent trait, or a histogram view of all associations.
 4. Response is an ideogram.js annotations JSON serialised object
-   1. The object enables the ideogram to plot a single point for each "parent trait" + "cytoband".
-   2. Each association count is given in the "length" attribute
-   3. Each unique rsid is given in the name attribute
 5. Plotting is done by the [Ideogram.js](https://eweitz.github.io/ideogram/) JavaScript library
 
 ## TODO
@@ -18,7 +15,7 @@
 - [ ] Frontend look and feel 
 - [ ] Deployment
 - [ ] Potentially enforce constraints to avoid plotting too many tracks (ideogram limit is 10)
-- [ ] Investigate use of histogram for visualising number of associations (plotting the length attr)
+- [ ] handling large response payloads
 
 ### Run locally (with docker)
 
@@ -46,7 +43,7 @@ Example for getting a single pmid of data
 
 ```bash
 curl -X 'GET' \
-  'http://0.0.0.0:9000/v1/plotting_data?pmid=36848389' \
+  'http://0.0.0.0:9000/v1/annotations?pmid=36848389' \
   -H 'accept: application/json'
 ```
 
@@ -85,3 +82,5 @@ see [ideogram.js](https://github.com/eweitz/ideogram/blob/master/api.md) for mor
 ![Example of six parent trait categories represented](gwas_diagram/ideogram_6_traits.png)
 
 ![Example of a single chromosome view, after clicking the deisired chromosome or point](gwas_diagram/single_chromosome_view.png)
+
+![Example of histogram of all associations for Cardiovascular disease](gwas_diagram/histogram_cardiovascular_disease.png)

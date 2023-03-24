@@ -30,8 +30,8 @@ function parseForm() {
 
 
 
-function generateUrl(formData) {
-    var url = "http://0.0.0.0:9000/v1/plotting_data?";
+function generateUrl(visType, formData) {
+    var url = "http://0.0.0.0:9000/v1/" + visType + "?";
 
     for (var pair of formData.entries()) {
         url += `${pair[0]}=${pair[1]}&`;
@@ -52,28 +52,12 @@ $("#filter_button").click(function () {
     // Wiping the sort data:
     window.cytobandSortPositions = {};
 
+    var visType = $("input[name=\"visType\"]:checked").val();
+
     // hostname:
-    var jqxhr = $.ajax({
-        url: "http://0.0.0.0:9000/v1/plotting_data?",
-        data: parameters,
-        processData: false,
-        contentType: false,
-        type: "GET",
-        success: function (response) {
-            var url = generateUrl(parameters)
-            // Assigning the response to the global variable:
-            window.response = response;
+    var url = generateUrl(visType, parameters);
+    drawDiagram(url);
 
-            // Extract the type of the visualization:
-            window.visualizationType = $("input[name=\"visType\"]:checked").val();
-
-            // Update scale:
-            window.scale = Number($("option[name=\"scale\"]:selected").val());
-
-            // Once the response is here, we plot:
-            drawDiagram(url);
-        }
-    })
 });
 
 /*
