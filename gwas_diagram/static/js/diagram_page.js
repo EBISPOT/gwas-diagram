@@ -1,11 +1,3 @@
-// When the page is loaded, the chromosomes are added:
-$(document).ready(function () {
-    $.get("../static/svg/chromosomes.svg", function (data) {
-        $("#svgEmbed").append(data.documentElement);
-    });
-});
-
-
 // Function to parse input field:
 function parseForm() {
     var parameters = new FormData();
@@ -36,14 +28,16 @@ function parseForm() {
     return (parameters);
 }
 
-// Parse form data
-function generateCurlCommand(formData) {
-    var curlCommand = `curl -X POST \"${location.origin}/v1/filter\"`;
+
+
+function generateUrl(visType, formData) {
+    var url = "http://0.0.0.0:9000/v1/" + visType + "?";
 
     for (var pair of formData.entries()) {
-        curlCommand += ` \\&#10;    -d ${pair[0]}="${pair[1]}"`;
+        url += `${pair[0]}=${pair[1]}&`;
     }
-    return curlCommand;
+    console.log(url)
+    return url;
 }
 
 // Upon hitting submit button: parse input fields and then fetch the corresponding filtered data
@@ -58,31 +52,12 @@ $("#filter_button").click(function () {
     // Wiping the sort data:
     window.cytobandSortPositions = {};
 
+    var visType = $("input[name=\"visType\"]:checked").val();
+
     // hostname:
-    var jqxhr = $.ajax({
-        url: "/v1/filter",
-        data: parameters,
-        processData: false,
-        contentType: false,
-        type: "POST",
-        success: function (response) {
-            var curlString = generateCurlCommand(parameters);
-            $("#requestBody").empty();
-            $("#requestBody").append(`<p>[Info] This is the equivalent curl command:<br>${curlString}</p>`);
+    var url = generateUrl(visType, parameters);
+    drawDiagram(url);
 
-            // Assigning the response to the global variable:
-            window.response = response;
-
-            // Extract the type of the visualization:
-            window.visualizationType = $("input[name=\"visType\"]:checked").val();
-
-            // Update scale:
-            window.scale = Number($("option[name=\"scale\"]:selected").val());
-
-            // Once the response is here, we plot:
-            drawDiagram();
-        }
-    })
 });
 
 /*

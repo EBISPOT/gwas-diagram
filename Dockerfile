@@ -1,24 +1,30 @@
-FROM python:3.6.6-alpine3.6
+FROM python:3.11.2
 
-RUN apk update && apk add libressl-dev postgresql-dev libffi-dev gcc musl-dev python3-dev 
+# Configure Poetry
+ENV POETRY_VERSION=1.3.2
+ENV POETRY_HOME=/opt/poetry
+ENV POETRY_VENV=/opt/poetry-venv
+ENV POETRY_CACHE_DIR=/opt/.cache
 
-# Install GCC:
-RUN apk add build-base
-RUN pip install --upgrade pip
+# Install system dependencies
+#RUN apk update && apk add gcc build-base
 
-# Copy application files:
+# Install poetry separated from system interpreter
+RUN python3 -m venv $POETRY_VENV \
+    && $POETRY_VENV/bin/pip install -U pip setuptools \
+    && $POETRY_VENV/bin/pip install poetry==${POETRY_VERSION}
+
+# Add `poetry` to PATH
+ENV PATH="${PATH}:${POETRY_VENV}/bin"
+
+WORKDIR /application
+
+# Install dependencies
 COPY . /application/
-WORKDIR /application/
-
-# Installing dependencies:
-RUN pip install -r requirements.txt
-
-# Install custom packages:
-# RUN pip install .
+RUN poetry install
 
 # Expose port:
 EXPOSE 8000
 
 # Upon firing up the container, the app starts:
-CMD ["gunicorn", "-b", "0.0.0.0:8000", "app:app"]
-
+CMD ["poetry", "run", "uvicorn", "gwas_diagram.main:app", "--host", "0.0.0.0", "--port", "8000", "--timeout-keep-alive", "1000"]

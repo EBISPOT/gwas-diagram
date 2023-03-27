@@ -6,6 +6,7 @@
     <title>GWAS Catalog diagram page</title>
     <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
     <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ideogram@1.41.0/dist/js/ideogram.min.js"></script>
     <!-- <link rel="stylesheet" type="text/css" href="../static/css/diagram.css"> -->
     <link rel="stylesheet" type="text/css" href="../static/css/diagram_page.css">
 </head>
@@ -57,8 +58,8 @@
         <div class="filterGroup">
             Please select visualization type:<br>
             <div class="filterOptions">
-                <input type="radio" name="visType" value="circles" checked="checked"> Stacked circle plot<br>
-                <input type="radio" name="visType" value="rectangles"> Stacked rectangle plot<br>
+                <input type="radio" name="visType" value="annotations" checked="checked">circle plot<br>
+                <input type="radio" name="visType" value="histogram">histogram<br>
             </div>
         </div>
 
@@ -184,8 +185,8 @@
 
 
     <!-- Define something else-->
-    <script src="../static/js/diagram.js"></script>
     <script src="../static/js/diagram_page.js"></script>
+    <script src="../static/js/ideogram.js"></script>
 </body>
 
 </html>

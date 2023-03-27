@@ -16,10 +16,10 @@ class DataLoader:
     def __init__(self, parameters) -> None:
 
         # Store input:
-        self.parent_mapping_file = parameters.parent_mapping_file
-        self.association_file = parameters.association_file
-        self.ancestry_file = parameters.ancestry_file
-        self.release_stats_url = parameters.release_stats
+        self.parent_mapping_file = parameters.PARENT_MAPPING_FILE
+        self.association_file = parameters.ASSOCIATION_FILE
+        self.ancestry_file = parameters.ANCESTRY_FILE
+        self.release_stats_url = parameters.RELEASE_STATS
 
         # Get the release date of the GWAS Catalog:
         self.release_date = self.__get_release_date()
